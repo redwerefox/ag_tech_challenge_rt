@@ -22,3 +22,6 @@ add_executable(${EXECUTABLE_NAME} app/src/main.cpp)
 target_include_directories(${EXECUTABLE_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/plugin/include)
 
 add_dependencies(${EXECUTABLE_NAME} plugin)
+
+
+add_subdirectory(tests)
