@@ -7,6 +7,11 @@ class ChallengeConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     generators = "CMakeDeps", "CMakeToolchain"
 
+    default_options = {
+        "boost:shared": True,
+        "gtest:shared": True,
+    }
+
     def requirements(self):
         # require boost log library
         self.requires("boost/1.82.0")
