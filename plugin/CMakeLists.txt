@@ -1,15 +1,7 @@
-cmake_minimum_required(VERSION 3.21)
-
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(TARGET_NAME plugin)
 
-# get the project name from the subdirectory name
-get_filename_component(PROJECT_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
-
-project(${PROJECT_NAME} CXX)
+project(${TARGET_NAME} CXX)
 
 # create a filegroup for source files and header files
 set(PLUGIN_SOURCES
@@ -25,12 +17,12 @@ set(PLUGIN_HEADERS
 )
 
 # Build the plugin as a shared library
-add_library(${PROJECT_NAME} SHARED
+add_library(${TARGET_NAME} SHARED
     ${PLUGIN_SOURCES}
     ${PLUGIN_HEADERS}
 )
 
-target_compile_definitions(${PROJECT_NAME} PRIVATE PLUGIN_BUILDING)
+target_compile_definitions(${TARGET_NAME} PRIVATE PLUGIN_BUILDING)
 target_include_directories(${TARGET_NAME} PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
@@ -38,7 +30,7 @@ target_include_directories(${TARGET_NAME} PUBLIC
 # Linking dependencies
 # todo add boost log to conan
 find_package(Boost REQUIRED COMPONENTS log)
-target_link_libraries(${PROJECT_NAME} PRIVATE Boost::log)
+target_link_libraries(${TARGET_NAME} PRIVATE Boost::log)
 
 if(WIN32 AND Boost_USE_STATIC_LIBS STREQUAL "OFF")
     target_compile_definitions(${TARGET_NAME} PRIVATE BOOST_ALL_DYN_LINK)
