@@ -23,5 +23,8 @@ target_include_directories(${EXECUTABLE_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR
 
 add_dependencies(${EXECUTABLE_NAME} plugin)
 
+target_link_libraries(${EXECUTABLE_NAME} PRIVATE
+    ${CMAKE_DL_LIBS}
+)
 
 add_subdirectory(tests)
