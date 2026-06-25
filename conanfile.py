@@ -1,5 +1,5 @@
 from conan import ConanFile
-from conan.tools.cmake import CMake, CMakeToolchain, CMakeDeps
+from conan.tools.cmake import CMake, CMakeToolchain, CMakeDeps, cmake_layout
 
 class ChallengeConan(ConanFile):
     name = "challenge"
@@ -11,6 +11,9 @@ class ChallengeConan(ConanFile):
         "boost/*:shared": True,
         "gtest/*:shared": True,
     }
+
+    def layout(self):
+        cmake_layout(self)
 
     def requirements(self):
         # require boost log library
