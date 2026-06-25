@@ -10,9 +10,6 @@ class ChallengeConan(ConanFile):
     def requirements(self):
         # require boost log library
         self.requires("boost/1.82.0")
-        #if linux, we require dlfcnf
-        if self.settings.os == "Linux":
-            self.requires("dlfcnf/1.0.0")
 
     def test_requirements(self):
         self.test_requires("gtest/1.13.0")
