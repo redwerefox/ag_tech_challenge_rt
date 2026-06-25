@@ -23,7 +23,7 @@ class ChallengeConan(ConanFile):
         self.test_requires("gtest/1.13.0")
 
     def build_requirements(self):
-        self.tool_requires("cmake/3.21.0")
+        self.tool_requires("cmake/[>=3.21]")
 
     def generate(self):
         tc = CMakeToolchain(self)
