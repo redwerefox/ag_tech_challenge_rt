@@ -9,7 +9,10 @@
         {
             "name": "base",
             "hidden": true,
-            "binaryDir": "${sourceDir}/build/${presetName}"
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/build/${presetName}/generators/conan_toolchain.cmake"
+            }
         },
         {
             "name": "linux-base",
