@@ -8,8 +8,8 @@ class ChallengeConan(ConanFile):
     generators = "CMakeDeps", "CMakeToolchain"
 
     default_options = {
-        "boost:shared": True,
-        "gtest:shared": True,
+        "boost/*:shared": True,
+        "gtest/*:shared": True,
     }
 
     def requirements(self):
