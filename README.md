@@ -1,4 +1,12 @@
 
+## Getting Started
+
+### Install conan
+
+```bash
+source install_conan.sh
+``` 
+
 ## Quick Overview
 
 You are given a small C++20 project that demonstrates a runtime plugin system.
@@ -7,21 +15,24 @@ Your task is to add a new plugin and provide the full build, test, lint, packagi
 
 ## Table of Contents
 
+- [Getting Started](#getting-started)
+  - [Install conan](#install-conan)
 - [Quick Overview](#quick-overview)
+- [Table of Contents](#table-of-contents)
   - [1. Technical Solution Constraints](#1-technical-solution-constraints)
-  - [2. Definition of Done](#2-definition-of-done)
-  - [3. Technical Interview](#3-technical-interview)
-- [Technical Challenge](#technical-challenge)
+  - [2. Definition of done](#2-definition-of-done)
+  - [3. Technical interview](#3-technical-interview)
+- [Technical challenge](#technical-challenge)
   - [1. Provided Source Files](#1-provided-source-files)
   - [2. Requirements](#2-requirements)
-    - [Task 1 — Use CMake Build System](#task-1--use-cmake-build-system)
-    - [Task 2 — Add Dependency Management Using Conan 2](#task-2--add-dependency-management-using-conan-2)
-    - [Task 3 — Add a SEGFAULT/Access Violation Detection Plugin](#task-3--add-a-segfaultaccess-violation-detection-plugin)
-    - [Task 4 — Installation](#task-4--installation)
-    - [Task 5 — Add Linters](#task-5--add-linters)
-    - [Task 6 — CI / CD (GitHub Actions)](#task-6--ci--cd-github-actions)
-    - [Extra Task 7 — Add Sanitizers](#extra-task-7--add-sanitizers)
-    - [Extra Task 8 — Introduce a Conan Package](#extra-task-8--introduce-a-conan-package)
+  - [Task 1 — Use CMake build system](#task-1--use-cmake-build-system)
+  - [Task 2 — Add dependency management using Conan 2](#task-2--add-dependency-management-using-conan-2)
+  - [Task 3 — Add a SEGFAULT/Access violation detection plugin](#task-3--add-a-segfaultaccess-violation-detection-plugin)
+  - [Task 4 — Installation](#task-4--installation)
+  - [Task 5 — Add Linters](#task-5--add-linters)
+  - [Task 6 — CI / CD (GitHub Actions)](#task-6--ci--cd-github-actions)
+  - [Extra Task 7 — Add Sanitizers](#extra-task-7--add-sanitizers)
+  - [Extra Task 8 — Introduce a Conan Package](#extra-task-8--introduce-a-conan-package)
   - [3. Evaluation Criteria](#3-evaluation-criteria)
 
 ---
@@ -96,11 +107,11 @@ Some tasks may have an _"Extra Goal"_, and some tasks are marked as _"Extra Task
 
 Set up a **CMake** (3.21) build & testing for the project.
 
-| Target | Kind | Notes                                                                                                                                    |
-|---|---|------------------------------------------------------------------------------------------------------------------------------------------|
-| `challenge` | Executable | Includes headers from `plugin/include/`. Does **not** link the plugin at build time — it loads it at runtime via `dlopen`/`LoadLibrary`. |
-| `plugin` | Shared library | Links all of its dependencies as shared libraries. Ensures symbols are visible.                                                          |
-| `plugin_tests` | Executable (test) | Loads the plugin dynamically (same as the main executable).                                                           |
+| Target         | Kind              | Notes                                                                                                                                    |
+| -------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `challenge`    | Executable        | Includes headers from `plugin/include/`. Does **not** link the plugin at build time — it loads it at runtime via `dlopen`/`LoadLibrary`. |
+| `plugin`       | Shared library    | Links all of its dependencies as shared libraries. Ensures symbols are visible.                                                          |
+| `plugin_tests` | Executable (test) | Loads the plugin dynamically (same as the main executable).                                                                              |
 
 ### Task 2 — Add dependency management using Conan 2
 
@@ -170,10 +181,10 @@ Loading plugin from: /.../<prefix>/.../libplugin.so
 
 **Base goal:** Configure the following static-analysis tools:
   
-| Tool             | Scope |
-|------------------|---|
+| Tool             | Scope                                                      |
+| ---------------- | ---------------------------------------------------------- |
 | **clang-format** | All project C++ source and header files. Provide a config. |
-| **clang-tidy**   | All project C++ source files. Provide a config. |
+| **clang-tidy**   | All project C++ source files. Provide a config.            |
 
 
 - Both must be runnable locally (e.g. via a script or some other tool).
@@ -187,12 +198,12 @@ Create `.github/workflows/` pipeline(s) that run on `push` to `main`, on pull re
 
 The CI must include the following **jobs / stages**:
 
-| Stage | Runs on | Description                                                                                                                        |
-|---|---|------------------------------------------------------------------------------------------------------------------------------------|
-| **Build & Test** | `ubuntu-latest` (GCC), `ubuntu-latest` (Clang), `windows-latest` (MSVC) | Conan install, CMake configure + build, `ctest`.                                                                                   |
-| **Lint** | `ubuntu-latest` | Run clang-format (check mode) and clang-tidy. Fail on violations.                                                                  |
-| **Install & Package** | same matrix as Build & Test | `cmake --install`, archive the result (`.tar.gz` on Linux, `.zip` on Windows). Upload as workflow artifacts.                       |
-| **Release** | `ubuntu-latest` | **Only on `v*.*.*` tags.** Download all artifacts from previous stages and create a **GitHub Release** with the archives attached. |
+| Stage                 | Runs on                                                                 | Description                                                                                                                        |
+| --------------------- | ----------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| **Build & Test**      | `ubuntu-latest` (GCC), `ubuntu-latest` (Clang), `windows-latest` (MSVC) | Conan install, CMake configure + build, `ctest`.                                                                                   |
+| **Lint**              | `ubuntu-latest`                                                         | Run clang-format (check mode) and clang-tidy. Fail on violations.                                                                  |
+| **Install & Package** | same matrix as Build & Test                                             | `cmake --install`, archive the result (`.tar.gz` on Linux, `.zip` on Windows). Upload as workflow artifacts.                       |
+| **Release**           | `ubuntu-latest`                                                         | **Only on `v*.*.*` tags.** Download all artifacts from previous stages and create a **GitHub Release** with the archives attached. |
 
 ### Extra Task 7 — Add Sanitizers
 
@@ -223,12 +234,12 @@ conan cache restore challenge-conan-package.tar.gz
 
 ### 3. Evaluation Criteria
 
-| Area                  | What we look for |
-|-----------------------|---|
-| **Correctness**       | Everything builds and runs on both Linux and Windows. Tests pass. Installed tree is self-contained. |
-| **CMake quality**     | Proper use of targets, generator expressions, install rules. No hard-coded paths. |
+| Area                  | What we look for                                                                                                              |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| **Correctness**       | Everything builds and runs on both Linux and Windows. Tests pass. Installed tree is self-contained.                           |
+| **CMake quality**     | Proper use of targets, generator expressions, install rules. No hard-coded paths.                                             |
 | **Conan integration** | Clean `conanfile.py`. `conan install`, `conan create`, and `conan test` all work. Shared-library option correctly propagated. |
-| **CI robustness**     | Matrix covers all required platforms/compilers. Linters and sanitizers actually catch issues. Release uploads are complete. |
-| **Code quality**      | Clean, idiomatic C++20. New plugin follows the same conventions as the existing one. |
-| **Plugin robustness** |  |
-| **Documentation**     | Brief but sufficient instructions in a top-level README for a new developer to clone, build, and run the project. |
+| **CI robustness**     | Matrix covers all required platforms/compilers. Linters and sanitizers actually catch issues. Release uploads are complete.   |
+| **Code quality**      | Clean, idiomatic C++20. New plugin follows the same conventions as the existing one.                                          |
+| **Plugin robustness** |                                                                                                                               |
+| **Documentation**     | Brief but sufficient instructions in a top-level README for a new developer to clone, build, and run the project.             |
