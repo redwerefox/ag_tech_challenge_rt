@@ -1,14 +1,10 @@
-cmake_minimum_required(VERSION 3.21)
 
-project(test_plugin CXX)
 
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON) # todo review
-set(CMAKE_CXX_EXTENSIONS OFF)
+set(TEST_TARGET test_plugin)
 
 # create a filegroup for source files and header files
 set(PLUGIN_SOURCES
-    test_plugincpp
+    test_plugin.cpp
 
     # Add other .cpp files here as you create them
 )
@@ -19,14 +15,18 @@ set(PLUGIN_HEADERS
 )
 
 # Build the plugin as a shared library
-add_executable(${PROJECT_NAME}
+add_executable(${TEST_TARGET}
     ${PLUGIN_SOURCES}
     ${PLUGIN_HEADERS}
 )
 
-# Link dynamic plugin and googletest
-target_link_libraries(${PROJECT_NAME} PRIVATE
-    plugin
-    gtest
-    gtest_main
+target_link_libraries(${TEST_TARGET} PRIVATE
+    ${CMAKE_DL_LIBS}
+    GTest::gtest
+    GTest::gtest_main
 )
+
+add_dependencies(${TEST_TARGET} plugin)
+
+include(GoogleTest)
+gtest_discover_tests(${TEST_TARGET})
