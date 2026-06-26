@@ -11,7 +11,7 @@ set(PLUGIN_SOURCES
 )
 
 set(PLUGIN_HEADERS
-    include/plugin.h
+    include/plugin/plugin.h
 
     # Add other .h files here
 )
