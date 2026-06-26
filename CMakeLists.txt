@@ -36,4 +36,5 @@ target_link_libraries(${EXECUTABLE_NAME} PRIVATE
 
 install(TARGETS ${EXECUTABLE_NAME} DESTINATION bin)
 
+enable_testing()
 add_subdirectory(tests)
