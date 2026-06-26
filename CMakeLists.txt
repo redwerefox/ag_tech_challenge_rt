@@ -30,4 +30,6 @@ target_link_libraries(${EXECUTABLE_NAME} PRIVATE
     ${CMAKE_DL_LIBS}
 )
 
+install(TARGETS ${EXECUTABLE_NAME} DESTINATION bin)
+
 add_subdirectory(tests)
