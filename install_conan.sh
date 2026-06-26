@@ -9,7 +9,7 @@ python3 -m pip install --upgrade pip
 
 python3 -m venv venv-conan
 echo "Conan virtual environment created"
-source venv-conan/Scripts/activate
+source venv-conan/bin/activate
 echo "Conan virtual environment activated"
 pip install conan
 echo "Conan installed in virtual environment"
