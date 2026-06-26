@@ -1,6 +1,7 @@
 
 
 set(TEST_TARGET test_plugin)
+find_package(GTest REQUIRED)
 
 # create a filegroup for source files and header files
 set(PLUGIN_SOURCES
