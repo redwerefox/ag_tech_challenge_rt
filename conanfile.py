@@ -31,8 +31,12 @@ class ChallengeConan(ConanFile):
         deps = CMakeDeps(self)
         deps.generate()
 
+
     def build(self):
         cmake = CMake(self)
         cmake.configure()
         cmake.build()
 
+    def package(self):
+        cmake = CMake(self)
+        cmake.install()
