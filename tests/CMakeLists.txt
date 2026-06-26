@@ -21,6 +21,8 @@ add_executable(${TEST_TARGET}
     ${PLUGIN_HEADERS}
 )
 
+target_include_directories(${TEST_TARGET} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../plugin/include)
+
 target_link_libraries(${TEST_TARGET} PRIVATE
     ${CMAKE_DL_LIBS}
     GTest::gtest
