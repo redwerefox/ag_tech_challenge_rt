@@ -24,12 +24,6 @@ target_include_directories(${EXECUTABLE_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR
 
 add_dependencies(${EXECUTABLE_NAME} plugin)
 
-if(WIN32)
-    target_compile_definitions(${EXECUTABLE_NAME} PRIVATE PLUGIN_REL_PATH="plugin.dll")
-else()
-    target_compile_definitions(${EXECUTABLE_NAME} PRIVATE PLUGIN_REL_PATH="../lib/libplugin.so")
-endif()
-
 target_link_libraries(${EXECUTABLE_NAME} PRIVATE
     ${CMAKE_DL_LIBS}
 )
