@@ -14,6 +14,8 @@ add_subdirectory(plugin)
 
 add_executable(${EXECUTABLE_NAME} app/src/main.cpp)
 
+set_target_properties(${EXECUTABLE_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}\\bin")
+
 target_include_directories(${EXECUTABLE_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/plugin/include)
 
 add_dependencies(${EXECUTABLE_NAME} plugin)
