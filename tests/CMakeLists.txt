@@ -32,4 +32,7 @@ target_link_libraries(${TEST_TARGET} PRIVATE
 add_dependencies(${TEST_TARGET} plugin)
 
 include(GoogleTest)
-gtest_discover_tests(${TEST_TARGET})
+gtest_discover_tests(test_plugin
+    PROPERTIES
+    ENVIRONMENT "PLUGIN_PATH=$<TARGET_FILE:plugin>"
+)
