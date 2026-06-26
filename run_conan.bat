@@ -1,4 +1,3 @@
-source venv-conan\Scripts\activate
 conan install . --build=missing --profile profiles/windows-msvc
 call build\Release\generators\conanbuild.bat
 cmake --preset conan-release
