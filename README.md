@@ -8,7 +8,7 @@ source install_conan.sh
 ``` 
 On Windows use git bash to create the virtual environment.
 
-### Run conan (Windows)
+### Run conan (Windows) to install dependencies, build and run tests
 
 ```bat
 venv-conan\Scripts\activate
@@ -25,7 +25,7 @@ Your task is to add a new plugin and provide the full build, test, lint, packagi
 
 - [Getting Started](#getting-started)
   - [Install conan](#install-conan)
-  - [Run conan (Windows)](#run-conan-windows)
+  - [Run conan (Windows) to install dependencies, build and run tests](#run-conan-windows-to-install-dependencies-build-and-run-tests)
 - [Quick Overview](#quick-overview)
 - [Table of Contents](#table-of-contents)
   - [1. Technical Solution Constraints](#1-technical-solution-constraints)
