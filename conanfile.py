@@ -5,7 +5,7 @@ class ChallengeConan(ConanFile):
     name = "challenge"
     version = "0.1"
     settings = "os", "compiler", "build_type", "arch"
-    generators = "CMakeToolchain", "CMakeDeps"
+    generators = "CMakeToolchain", "CMakeDeps", "VirtualBuildEnv", "VirtualRunEnv"
 
     default_options = {
         "boost/*:shared": True,
@@ -17,7 +17,7 @@ class ChallengeConan(ConanFile):
 
     def requirements(self):
         # require boost log library
-        self.requires("boost/1.82.0")
+        self.requires("boost/[<=1.82.0]")
 
     def build_requirements(self):
         self.tool_requires("cmake/[>=3.21]")
