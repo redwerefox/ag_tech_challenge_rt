@@ -33,3 +33,16 @@ I also need to improve conan to only load boost logs, if that is possible.
     - Verify build is running on my windows machine and WSL2 Linux debian + gcc
     - only build boost logs if possible
     - I will skip Task 3 and do Task 4 first. 
+
+
+## Checkpoint 3: conan_run locally working and discovering and executing the tests
+Today I was able to create the exe on windows fully automated with conan. The ctest is also running and discovering the tests.
+I focused on the automation of the build and test process since i want to focus my attention to the runners and the CICD. The run_conan.bat is creating the first stage of the pipeline. 
+
+### Tough learnings
+   - For a while I ignored the fact that i used the microsoft cmake generator. This was quite costly in time because its not cross platform friendly. Looking back I moved into that direction, since conan tutorials use it too. Im happy that i was able switch to ninja.
+   - There is also the confusion about conans generators. I was thinking that is a smart idea to use them for the project itself too. But of course, a cmake preset should be provided that allows normal development. 
+
+### next steps
+   - test conan on debian
+   - setup a development, local friendly cmake preset
