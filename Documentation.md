@@ -46,3 +46,7 @@ I focused on the automation of the build and test process since i want to focus 
 ### next steps
    - test conan on debian
    - setup a development, local friendly cmake preset
+
+## Checkpoint 4: conan_run on debian and local development preset
+I was able to run the conan_run on debian. I decided to move even more installations into conan. Ninja and cmake are now installed via conan. 
+That created some hurdles, as now I am using the generators VirtualBuildEnv and VirtualRunEnv. I played around with them and as long as i extend the run_conan scripts with activates/deactivates, it should work. I look forward to test the pipeline on github actions soon.
