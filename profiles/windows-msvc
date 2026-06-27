@@ -7,9 +7,5 @@ compiler.cppstd=20
 compiler.runtime=dynamic
 build_type=Release
 
-[tool_requires]
-cmake/[>=3.21]
-ninja/[>=1.11]
-
 [conf]
 tools.cmake.cmaketoolchain:generator=Ninja
