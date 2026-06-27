@@ -36,6 +36,7 @@ jobs:
       - name: Install Conan
         run: |
           pip install conan
+          conan profile detect --force
 
       - name: Build and Test Ubuntu Clang 
         if: matrix.profile == 'profiles/ubuntu-clang'
