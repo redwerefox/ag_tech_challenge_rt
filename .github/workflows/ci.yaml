@@ -1,0 +1,50 @@
+name: tech_challenge_rt_cicd
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false # If one fails, let the others finish
+      matrix:
+        include:
+          - name: "Ubuntu (GCC)"
+            os: ubuntu-latest
+            profile: "profiles/ubuntu-gcc"
+          - name: "Ubuntu (Clang)"
+            os: ubuntu-latest
+            profile: "profiles/ubuntu-clang"
+          - name: "Windows (MSVC)"
+            os: windows-latest
+            profile: "profiles/windows-msvc"
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Conan
+        run: |
+          pip install conan
+          conan profile detect --force
+
+      - name: Build and Test
+        if: ${{ matrix.profile }} == 'profiles/ubuntu-clang'
+        run: |
+          run_conan_clang.sh
+        else if: ${{ matrix.profile }} == 'profiles/ubuntu-gcc'
+        run: |
+          run_conan_gcc.sh
+        else if: ${{ matrix.profile }} == 'profiles/windows-msvc'
+        run: |
+          run_conan_msvc.bat
