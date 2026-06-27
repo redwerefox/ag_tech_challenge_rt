@@ -47,6 +47,10 @@ jobs:
         if: matrix.profile == 'profiles/ubuntu-gcc'
         run: bash run_conan_gcc.sh
 
+      - name: Setup MSVC Environment
+        if: matrix.profile == 'profiles/windows-msvc'
+        uses: ilammy/msvc-dev-cmd@v1
+
       - name: Build and Test Windows MSVC
         if: matrix.profile == 'profiles/windows-msvc'
         shell: cmd

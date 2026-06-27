@@ -12,6 +12,6 @@ cmake --build --preset conan-release
 echo "[4] Deactivating Conan build environment..."
 source build/Release/generators/deactivate_conanbuild.sh
 echo "[5] Activating Conan release environment..."
-source build/Release/generators/conanrelease.sh
+source build/Release/generators/conanrun.sh
 echo "[6] Running tests..."
 ctest --preset conan-release
