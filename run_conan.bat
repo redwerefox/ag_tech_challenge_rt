@@ -14,8 +14,7 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 cmake --build --preset conan-release
 if %errorlevel% neq 0 exit /b %errorlevel%
 
-echo [4] Switching to Runtime environment...
-call build\Release\generators\deactivate_conanbuild.bat
+echo [4] Adding Runtime environment...
 call build\Release\generators\conanrun.bat
 
 echo [5] Running Tests...
