@@ -1,23 +1,6 @@
 @echo off
 setlocal
 
-echo [0] Initializing MSVC x64 environment...
-
-call "%ProgramFiles%\Microsoft Visual Studio\2022\Community\Common7\Tools\VsDevCmd.bat" ^
-    -arch=x64 -host_arch=x64
-
-if errorlevel 1 (
-    echo Failed to initialize MSVC environment
-    exit /b 1
-)
-
-echo [1] Checking compiler...
-where cl
-if errorlevel 1 (
-    echo cl.exe not found after MSVC init
-    exit /b 1
-)
-
 echo [1] Installing dependencies...
 conan install . --build=missing --output-folder=build --profile:build=profiles/windows-msvc --profile:host=profiles/windows-msvc
 
