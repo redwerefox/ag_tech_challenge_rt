@@ -2,9 +2,9 @@ name: tech_challenge_rt_cicd
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "git_actions" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "git_actions" ]
 
 jobs:
   build-and-test:
