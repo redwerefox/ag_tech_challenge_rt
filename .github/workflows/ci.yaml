@@ -41,12 +41,7 @@ jobs:
       - name: Build and Test Ubuntu Clang 
         if: matrix.profile == 'profiles/ubuntu-clang'
         run: |
-          echo "CURRENT DIRECTORY CONTENTS:"
-          ls -la
-          echo "FILE FORMAT CHECK:"
-          file run_conan_clang.sh
-          echo "STARTING SCRIPT:"
-          bash -x run_conan_clang.sh
+          bash run_conan_clang.sh
 
       - name: Build and Test Ubuntu GCC
         if: matrix.profile == 'profiles/ubuntu-gcc'
@@ -55,4 +50,4 @@ jobs:
       - name: Build and Test Windows MSVC
         if: matrix.profile == 'profiles/windows-msvc'
         shell: cmd
-        run: run_conan_msvc.bat
+        run: run_conan.bat
