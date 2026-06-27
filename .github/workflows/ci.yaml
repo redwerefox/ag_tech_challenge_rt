@@ -40,7 +40,13 @@ jobs:
 
       - name: Build and Test Ubuntu Clang 
         if: matrix.profile == 'profiles/ubuntu-clang'
-        run: bash run_conan_clang.sh
+        run: |
+          echo "CURRENT DIRECTORY CONTENTS:"
+          ls -la
+          echo "FILE FORMAT CHECK:"
+          file run_conan_clang.sh
+          echo "STARTING SCRIPT:"
+          bash -x run_conan_clang.sh
 
       - name: Build and Test Ubuntu GCC
         if: matrix.profile == 'profiles/ubuntu-gcc'
