@@ -3,7 +3,7 @@
 set -e
 
 echo "[1] conan install..."
-conan install . --build=missing -s build_type=Release -profile=linux-clang
+conan install . --build=missing -s build_type=Release --profile=profiles/linux-clang
 echo "[2] Activating Conan build environment..."
 source build/Release/generators/conanbuild.sh
 echo "[3] Configuring and Building..."

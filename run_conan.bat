@@ -1,7 +1,7 @@
 @echo off
 
 echo [1] Installing dependencies...
-conan install . --build=missing --profile profiles/windows-msvc
+conan install . --build=missing --profile=profiles/windows-msvc
 if %errorlevel% neq 0 exit /b %errorlevel%
 
 echo [2] Activating Conan build environment...
