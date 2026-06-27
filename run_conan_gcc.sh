@@ -3,7 +3,7 @@
 set -e
 
 echo "[1] conan install..."
-conan install . --build=missing -s build_type=Release --profile:build=profiles/ubuntu-gcc --profile:host=profiles/ubuntu-gcc
+conan install . --build=missing -s build_type=Release --profile:build=profiles/linux-gcc --profile:host=profiles/linux-gcc
 echo "[2] Activating Conan build environment..."
 source build/Release/generators/conanbuild.sh
 echo "[3] Configuring and Building..."
