@@ -5,7 +5,7 @@ class ChallengeConan(ConanFile):
     name = "challenge"
     version = "0.1"
     settings = "os", "compiler", "build_type", "arch"
-    generators = "CMakeToolchain", "CMakeDeps", "VirtualBuildEnv", "VirtualRunEnv"
+    generators = "CMakeToolchain", "CMakeDeps"
 
     default_options = {
         "boost/*:shared": True,
