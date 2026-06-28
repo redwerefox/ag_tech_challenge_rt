@@ -18,3 +18,9 @@ class ChallengeConan(ConanFile):
     def build_requirements(self):
         self.tool_requires("cmake/[>=3.21]")
         self.tool_requires("ninja/[>=1.10]")
+
+    def configure(self):
+        self.options["boost"].without_cobalt = True
+        self.options["boost"].without_python = True
+        self.options["boost"].without_graph = True
+        self.options["boost"].without_test = True
