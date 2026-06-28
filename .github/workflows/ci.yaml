@@ -68,7 +68,7 @@ jobs:
           path: ~/.conan2
           key: conan-${{ runner.os }}-clang-${{ hashFiles('conanfile.py', 'profiles/**') }}
           restore-keys: |
-          conan-${{ runner.os }}-clang-
+            conan-${{ runner.os }}-clang-
 
       - name: Detect Conan profile
         run: conan profile detect --force
