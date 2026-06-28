@@ -61,3 +61,22 @@ This has been quite a journey. It is very rewarding to see the pipeline building
     - shared depedencies : It took me some experimentation to really enforce a setup where both main such as test are having all dependencies available. Now the full dependency tree is copied to the bin folder on windows. 
     - The general shift from conan, please do everything with environment to my cmake setting up the environment. This will be better because now developing locally is easier and the install steps should be more easier too.
     - creating a pipeline for github is very different then creating a pipeline for a runner, where you manually install everything. I'm looking forward to the interview to learn about how you are doing this.
+
+
+## Checkpoint 6: install and linting
+  - I put my focus towards delivering a installation which can run self contained. I was able to create this on windows and Ubuntu but only with the clang compiler. I did not find the reason for it. 
+  ```
+  CPack: - Install project: challenge []
+CMake Error at /home/runner/work/ag_tech_challenge_rt/ag_tech_challenge_rt/build/Release/cmake_install.cmake:74 (file):
+  file Could not resolve runtime dependencies:
+
+    libboost_filesystem.so.1.91.0
+
+
+CPack Error: Error when generating package: challenge
+FAILED: [code=1] CMakeFiles/package.util 
+cd /home/runner/work/ag_tech_challenge_rt/ag_tech_challenge_rt/build/Release && /usr/local/bin/cpack --config ./CPackConfig.cmake
+``` 
+ - At some point i shifted my attention towards being able to have artifacts on github. To set up the release staging I have not tested yet. And also to enhance the pipeline with quality checks. As requested we run clang-format and clang-tidy. These run in a open branch /linting . I did not merge this because to fix the pipeline i would need to format things. 
+ - Task 5 asks for having precommit hooks, which is a bit alienating to me. Personally I would think that clang-format and clang-tidy are consumed by IDEs and ideally enforced by the CICD.
+ - Rather import now is to create another plugin, to ideally find a fix for the gcc install issue. And demonstrate that fixing the linting allows for passing lint checks. 
