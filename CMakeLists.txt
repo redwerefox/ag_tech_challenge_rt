@@ -7,7 +7,9 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON) # todo review
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-cmake_policy(SET CMP0207 NEW) #stop cpack cluttering the output with normalizes paths
+if(POLICY CMP0207)
+    cmake_policy(SET CMP0207 NEW) # stop CPack cluttering output with normalized paths
+endif()
 include(InstallRequiredSystemLibraries)
 
 set(CPACK_PACKAGE_NAME "your_project")
