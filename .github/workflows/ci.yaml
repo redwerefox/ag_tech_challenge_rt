@@ -38,6 +38,13 @@ jobs:
           pip install conan
           conan profile detect --force
 
+        - name: Install dependencies (Linux)
+        if: matrix.profile == 'profiles/ubuntu-clang'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ninja-build clang
+
+
       - name: Build and Test Ubuntu Clang 
         if: matrix.profile == 'profiles/ubuntu-clang'
         run: |
