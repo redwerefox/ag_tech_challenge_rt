@@ -12,7 +12,6 @@ jobs:
   tidy:
     name: Lint clang tidy
     runs-on: ubuntu-latest
-    if: matrix.profile == 'profiles/ubuntu-clang'
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v6
@@ -32,7 +31,6 @@ jobs:
   enforceformat:
     name: Enforce code formatting
     runs-on: ubuntu-latest
-    if: matrix.profile == 'profiles/ubuntu-clang'
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v6
