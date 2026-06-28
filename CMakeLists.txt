@@ -32,7 +32,7 @@ set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 option(RUN_CLANG_TIDY "Run clang-tidy on build" OFF)
 
 if(RUN_CLANG_TIDY)
-    set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=*")
+    set(CMAKE_CXX_CLANG_TIDY "clang-tidy")
 endif()
 
 option(ENABLE_FORMAT_CHECK "Enable clang-format check target" OFF)
