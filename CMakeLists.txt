@@ -12,11 +12,14 @@ if(POLICY CMP0207)
 endif()
 include(InstallRequiredSystemLibraries)
 
-set(CPACK_PACKAGE_NAME "your_project")
-set(CPACK_PACKAGE_VERSION "1.0.0")
+set(CPACK_PACKAGE_NAME "${PROJECT_NAME}")
+set(CPACK_PACKAGE_VERSION "0.1")
 
-# Optional but recommended
-set(CPACK_GENERATOR "TGZ;ZIP")
+if(WIN32)
+    set(CPACK_GENERATOR "ZIP")
+else()
+    set(CPACK_GENERATOR "TGZ")
+endif()
 
 include(CPack)
 
@@ -70,13 +73,13 @@ target_link_libraries(${EXECUTABLE_NAME} PRIVATE
 install(TARGETS plugin
     RUNTIME_DEPENDENCIES
     PRE_EXCLUDE_REGEXES "api-ms-.*" "ext-ms-.*"
-    POST_EXCLUDE_REGEXES ".*system32.*"
+    POST_EXCLUDE_REGEXES ".*[Ss]ystem32.*"
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib
 )
 
-install(TARGETS challenge
+install(TARGETS ${EXECUTABLE_NAME}
     RUNTIME DESTINATION bin
 )
 
