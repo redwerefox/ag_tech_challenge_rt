@@ -31,14 +31,14 @@ jobs:
       #- name: Set up Python
       #  uses: actions/setup-python@v5
       #  with:
-      #    python-version: "3.12"
+      #     python-version: "3.12"
 
       - name: Install Conan
         run: |
           pip install conan
           conan profile detect --force
 
-        - name: Install dependencies (Linux)
+      - name: Install dependencies (Linux)
         if: matrix.profile == 'profiles/ubuntu-clang'
         run: |
           sudo apt-get update
