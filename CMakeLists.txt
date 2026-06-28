@@ -56,13 +56,17 @@ target_link_libraries(${EXECUTABLE_NAME} PRIVATE
 
 set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install" CACHE PATH "" FORCE)
 
-install(TARGETS plugin 
+install(TARGETS plugin
     RUNTIME_DEPENDENCIES
-        PRE_EXCLUDE_REGEXES "api-ms-.*" "ext-ms-.*"
-        POST_EXCLUDE_REGEXES ".*system32.*"
+    PRE_EXCLUDE_REGEXES "api-ms-.*" "ext-ms-.*"
+    POST_EXCLUDE_REGEXES ".*system32.*"
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib
+)
+
+install(TARGETS challenge
+    RUNTIME DESTINATION bin
 )
 
 enable_testing()

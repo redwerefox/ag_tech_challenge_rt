@@ -2,7 +2,7 @@
 setlocal
 
 echo [1] Installing dependencies...
-conan install . --build=missing --output-folder=build --profile:build=profiles/windows-msvc --profile:host=profiles/windows-msvc
+conan install . --build=missing --profile:build=profiles/windows-msvc --profile:host=profiles/windows-msvc
 
 if %errorlevel% neq 0 exit /b %errorlevel%
 
