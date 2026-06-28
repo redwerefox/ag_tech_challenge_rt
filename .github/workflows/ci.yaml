@@ -1,0 +1,79 @@
+name: tech_challenge_rt_cicd
+
+on:
+  push:
+    branches: [ "main", "git_actions" ]
+  pull_request:
+    branches: [ "main", "git_actions" ]
+
+jobs:
+  build-and-test:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false # If one fails, let the others finish
+      matrix:
+        include:
+          - name: "Ubuntu (GCC)"
+            os: ubuntu-latest
+            profile: "profiles/ubuntu-gcc"
+          - name: "Ubuntu (Clang)"
+            os: ubuntu-latest
+            profile: "profiles/ubuntu-clang"
+          - name: "Windows (MSVC)"
+            os: windows-latest
+            profile: "profiles/windows-msvc"
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+
+      #- name: Set up Python
+      #  uses: actions/setup-python@v5
+      #  with:
+      #     python-version: "3.12"
+      - name: Install Conan
+        run: pip install conan
+
+      - name: Cache Conan
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.conan2
+            C:\Users\runneradmin\.conan2
+          key: conan-${{ runner.os }}-${{ matrix.profile }}-${{ hashFiles('conanfile.py', 'profiles/*') }}
+          restore-keys: |
+            conan-${{ runner.os }}-${{ matrix.profile }}-
+
+      - name: Detect Conan profile
+        run: conan profile detect --force
+
+      - name: Install dependencies (Linux)
+        if: matrix.profile == 'profiles/ubuntu-clang'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ninja-build clang
+
+
+      - name: Build and Test Ubuntu Clang 
+        if: matrix.profile == 'profiles/ubuntu-clang'
+        run: |
+          bash run_conan_clang.sh
+
+      - name: Build and Test Ubuntu GCC
+        if: matrix.profile == 'profiles/ubuntu-gcc'
+        run: bash run_conan_gcc.sh
+
+      - name: Setup MSVC Environment
+        if: matrix.profile == 'profiles/windows-msvc'
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
+      - name: Build and Test Windows MSVC
+        if: matrix.profile == 'profiles/windows-msvc'
+        shell: cmd
+        run: run_conan.bat
+
+
+     

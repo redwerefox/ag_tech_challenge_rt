@@ -15,7 +15,7 @@ set(PLUGIN_HEADERS
     # Add other .h files here
 )
 
-# Build the plugin as a shared library
+# Build the test_plugin as an executable
 add_executable(${TEST_TARGET}
     ${PLUGIN_SOURCES}
     ${PLUGIN_HEADERS}
@@ -31,9 +31,24 @@ target_link_libraries(${TEST_TARGET} PRIVATE
 
 add_dependencies(${TEST_TARGET} plugin)
 
+if(WIN32)
+    add_custom_command(TARGET ${TEST_TARGET} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            $<TARGET_FILE:plugin>
+            $<TARGET_FILE_DIR:${TEST_TARGET}>
+
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            $<TARGET_RUNTIME_DLLS:${TEST_TARGET}>
+            $<TARGET_FILE_DIR:${TEST_TARGET}>
+
+        COMMAND_EXPAND_LISTS
+    )
+endif()
+
 include(GoogleTest)
 gtest_discover_tests(${TEST_TARGET}
-    DISCOVERY_MODE PRE_TEST
+    DISCOVERY_MODE POST_BUILD
+    WORKING_DIRECTORY $<TARGET_FILE_DIR:${TEST_TARGET}>
     PROPERTIES
     ENVIRONMENT "PLUGIN_PATH=$<TARGET_FILE:plugin>"
 )

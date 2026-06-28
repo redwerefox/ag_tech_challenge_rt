@@ -1,8 +1,9 @@
 
-conan install . --build=missing -s build_type=Release --profile=profiles/linux-gcc
-source build/Release/generators/conanbuild.sh
+# Exit immediately if any command fails (Crucial for CI/CD!)
+set -e
+
+echo "[1] conan install..."
+conan install . --build=missing -s build_type=Release --output-folder=build --profile:build=profiles/linux-gcc --profile:host=profiles/linux-gcc
 cmake --preset conan-release
 cmake --build --preset conan-release
-source build/Release/generators/deactivate_conanbuildenv.sh
-source build/Release/generators/conanrelease.sh
 ctest --preset conan-release

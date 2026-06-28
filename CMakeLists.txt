@@ -9,20 +9,46 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(EXECUTABLE_NAME challenge)
 
-# puts the test executable to the plugin bin
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+# executables → bin
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+# shared libs → lib (Linux), bin (Windows)
+if(WIN32)
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+else()
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+endif()
+
+if(UNIX AND NOT APPLE)
+    set(CMAKE_BUILD_RPATH "$ORIGIN/../lib")
+    set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
+    set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+endif()
 
 # move plugin into subdirectory
 add_subdirectory(plugin)
 
 add_executable(${EXECUTABLE_NAME} app/src/main.cpp)
 
-set_target_properties(${EXECUTABLE_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}\\bin")
-
 target_include_directories(${EXECUTABLE_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/plugin/include)
 
 add_dependencies(${EXECUTABLE_NAME} plugin)
+
+if(WIN32)
+    add_custom_command(TARGET ${EXECUTABLE_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            $<TARGET_FILE:plugin>
+            $<TARGET_FILE_DIR:${EXECUTABLE_NAME}>
+
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            $<TARGET_RUNTIME_DLLS:plugin>
+            $<TARGET_FILE_DIR:${EXECUTABLE_NAME}>
+
+        COMMAND_EXPAND_LISTS
+    )
+endif()
 
 target_link_libraries(${EXECUTABLE_NAME} PRIVATE
     ${CMAKE_DL_LIBS}
