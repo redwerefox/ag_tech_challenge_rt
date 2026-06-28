@@ -50,3 +50,14 @@ I focused on the automation of the build and test process since i want to focus 
 ## Checkpoint 4: conan_run on debian and local development preset
 I was able to run the conan_run on debian. I decided to move even more installations into conan. Ninja and cmake are now installed via conan. 
 That created some hurdles, as now I am using the generators VirtualBuildEnv and VirtualRunEnv. I played around with them and as long as i extend the run_conan scripts with activates/deactivates, it should work. I look forward to test the pipeline on github actions soon.
+
+
+## Checkpoint 5: Github Actions pipeline functional
+This has been quite a journey. It is very rewarding to see the pipeline building on github. Yesterday I've been working quite unfocused. Most likely because I was spending the day outside in the heat. Today I reflected on my work and was able to explore the pitfalls that hindered me yesterday.
+
+### Learnings
+    - compiler.libcxx=libstdc++11 : I was not aware that the standard comes with libstdc++11. The wrong setting here was the main hurdle for the linux pipelines.
+    - VirtualBuildEnv and VirtualRunEnv outdated: I was using them because i saw them in other conan files. I was thinking that it allows me more control over the environement during build and run. The current approach seems more modern and fits to the examples.
+    - shared depedencies : It took me some experimentation to really enforce a setup where both main such as test are having all dependencies available. Now the full dependency tree is copied to the bin folder on windows. 
+    - The general shift from conan, please do everything with environment to my cmake setting up the environment. This will be better because now developing locally is easier and the install steps should be more easier too.
+    - creating a pipeline for github is very different then creating a pipeline for a runner, where you manually install everything. I'm looking forward to the interview to learn about how you are doing this.
