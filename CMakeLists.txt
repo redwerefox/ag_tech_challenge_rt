@@ -50,12 +50,12 @@ add_dependencies(${EXECUTABLE_NAME} plugin)
 if(WIN32)
     add_custom_command(TARGET ${EXECUTABLE_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        $<TARGET_FILE:plugin>
-        $<TARGET_FILE_DIR:${EXECUTABLE_NAME}>
+            $<TARGET_FILE:plugin>
+            $<TARGET_FILE_DIR:${EXECUTABLE_NAME}>
 
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        $<TARGET_RUNTIME_DLLS:plugin>
-        $<TARGET_FILE_DIR:${EXECUTABLE_NAME}>
+            $<TARGET_RUNTIME_DLLS:plugin>
+            $<TARGET_FILE_DIR:${EXECUTABLE_NAME}>
 
         COMMAND_EXPAND_LISTS
     )
