@@ -26,6 +26,8 @@ include(CPack)
 
 set(EXECUTABLE_NAME challenge)
 
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
 # executables → bin
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
