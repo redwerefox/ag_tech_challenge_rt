@@ -34,11 +34,11 @@ else()
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 endif()
 
-if(UNIX AND NOT APPLE)
-    set(CMAKE_BUILD_RPATH "$ORIGIN/../lib")
-    set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
-    set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-endif()
+#if(UNIX AND NOT APPLE)
+#    set(CMAKE_BUILD_RPATH "$ORIGIN/../lib")
+#    set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
+#    set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+#endif()
 
 # move plugin into subdirectory
 add_subdirectory(plugin)
@@ -66,8 +66,6 @@ endif()
 target_link_libraries(${EXECUTABLE_NAME} PRIVATE
     ${CMAKE_DL_LIBS}
 )
-
-set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install" CACHE PATH "" FORCE)
 
 install(TARGETS plugin
     RUNTIME_DEPENDENCIES
