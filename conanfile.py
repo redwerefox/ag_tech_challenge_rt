@@ -7,44 +7,6 @@ class ChallengeConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     generators = "CMakeToolchain", "CMakeDeps"
 
-    #conan CONFIGURE_OPTIONS = (
-    #"atomic",
-    #"charconv",
-    #"chrono",
-    #"cobalt",
-    #"container",
-    #"context",
-    #"contract",
-    #"coroutine",
-    #"date_time",
-    #"exception",
-    #"fiber",
-    #"filesystem",
-    #"graph",
-    #"graph_parallel",
-    #"iostreams",
-    #"json",
-    #"locale",
-    #"log",
-    #"math",
-    #"mpi",
-    #"nowide",
-    #"process",
-    #"program_options",
-    #"python",
-    #"random",
-    #"regex",
-    #"serialization",
-    #"stacktrace",
-    #"system",
-    #"test",
-    #"thread",
-    #"timer",
-    #"type_erasure",
-    #"url",
-    #"wave",
-    #)
-
 
     default_options = {
         "boost/*:shared": True,
