@@ -7,6 +7,22 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON) # todo review
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+if(POLICY CMP0207)
+    cmake_policy(SET CMP0207 NEW) # stop CPack cluttering output with normalized paths
+endif()
+include(InstallRequiredSystemLibraries)
+
+set(CPACK_PACKAGE_NAME "${PROJECT_NAME}")
+set(CPACK_PACKAGE_VERSION "0.1")
+
+if(WIN32)
+    set(CPACK_GENERATOR "ZIP")
+else()
+    set(CPACK_GENERATOR "TGZ")
+endif()
+
+include(CPack)
+
 set(EXECUTABLE_NAME challenge)
 
 # executables → bin
@@ -21,11 +37,11 @@ else()
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 endif()
 
-if(UNIX AND NOT APPLE)
-    set(CMAKE_BUILD_RPATH "$ORIGIN/../lib")
-    set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
-    set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-endif()
+#if(UNIX AND NOT APPLE)
+#    set(CMAKE_BUILD_RPATH "$ORIGIN/../lib")
+#    set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
+#    set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+#endif()
 
 # move plugin into subdirectory
 add_subdirectory(plugin)
@@ -54,7 +70,18 @@ target_link_libraries(${EXECUTABLE_NAME} PRIVATE
     ${CMAKE_DL_LIBS}
 )
 
-install(TARGETS ${EXECUTABLE_NAME} DESTINATION bin)
+install(TARGETS plugin
+    RUNTIME_DEPENDENCIES
+    PRE_EXCLUDE_REGEXES "api-ms-.*" "ext-ms-.*"
+    POST_EXCLUDE_REGEXES ".*[Ss]ystem32.*"
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+)
+
+install(TARGETS ${EXECUTABLE_NAME}
+    RUNTIME DESTINATION bin
+)
 
 enable_testing()
 add_subdirectory(tests)
