@@ -7,6 +7,17 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON) # todo review
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+cmake_policy(SET CMP0207 NEW) #stop cpack cluttering the output with normalizes paths
+include(InstallRequiredSystemLibraries)
+
+set(CPACK_PACKAGE_NAME "your_project")
+set(CPACK_PACKAGE_VERSION "1.0.0")
+
+# Optional but recommended
+set(CPACK_GENERATOR "TGZ;ZIP")
+
+include(CPack)
+
 set(EXECUTABLE_NAME challenge)
 
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)

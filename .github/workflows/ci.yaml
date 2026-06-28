@@ -75,5 +75,8 @@ jobs:
         shell: cmd
         run: run_conan.bat
 
+      - name: Package with CPack
+        run: cmake --build --preset conan-release --target package
+
 
      
