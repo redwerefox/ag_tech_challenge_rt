@@ -2,7 +2,7 @@ name: tech_challenge_rt_cicd
 
 on:
   push:
-    branches: [ "main", "git_actions" ]
+    branches: [ "main", "git_actions", "linting" ]
   pull_request:
     branches: [ "main", "git_actions" ]
 
