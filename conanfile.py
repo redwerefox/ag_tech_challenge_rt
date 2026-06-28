@@ -24,3 +24,5 @@ class ChallengeConan(ConanFile):
         self.options["boost"].without_python = True
         self.options["boost"].without_graph = True
         self.options["boost"].without_test = True
+        self.options["boost"].shared = True
+        self.options["gtest"].shared = True

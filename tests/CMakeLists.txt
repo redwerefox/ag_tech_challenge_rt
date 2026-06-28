@@ -38,7 +38,7 @@ if(WIN32)
             $<TARGET_FILE_DIR:${TEST_TARGET}>
 
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            $<TARGET_RUNTIME_DLLS:plugin>
+            $<TARGET_RUNTIME_DLLS:${TEST_TARGET}>
             $<TARGET_FILE_DIR:${TEST_TARGET}>
 
         COMMAND_EXPAND_LISTS
