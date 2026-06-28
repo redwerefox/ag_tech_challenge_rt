@@ -41,9 +41,9 @@ jobs:
           path: |
             ~/.conan2
             C:\Users\runneradmin\.conan2
-          key: conan-${{ runner.os }}-${{ matrix.compiler }}-${{ hashFiles('conanfile.py', 'profiles/*') }}
+          key: conan-${{ runner.os }}-${{ matrix.profile }}-${{ hashFiles('conanfile.py', 'profiles/*') }}
           restore-keys: |
-            conan-${{ runner.os }}-${{ matrix.compiler }}-
+            conan-${{ runner.os }}-${{ matrix.profile }}-
 
       - name: Detect Conan profile
         run: conan profile detect --force
