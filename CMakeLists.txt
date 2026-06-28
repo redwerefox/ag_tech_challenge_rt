@@ -28,6 +28,21 @@ set(EXECUTABLE_NAME challenge)
 
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
+# set option to run clang-tidy on build
+option(RUN_CLANG_TIDY "Run clang-tidy on build" OFF)
+
+if(RUN_CLANG_TIDY)
+    set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=*")
+endif()
+
+option(ENABLE_FORMAT_CHECK "Enable clang-format check target" OFF)
+
+if(ENABLE_FORMAT_CHECK)
+    add_custom_target(format-check
+        COMMAND clang-format --dry-run --Werror ${ALL_SOURCE_FILES}
+    )
+endif()
+
 # executables → bin
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
