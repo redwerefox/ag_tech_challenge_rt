@@ -95,3 +95,25 @@ TEST_F(LoadPluginAndSegfaultDetect, PluginSegfaultsAreDetected)
     // The test will PASS if the code crashes.
     ASSERT_DEATH({ plugin_crash_segfault(); }, ".*"); // Optional: replace ".*" with expected output from your detector
 }
+
+// Google Test recommends death test fixtures end in "DeathTest"
+using LoadPluginAndSegfaultDetectDeathTest = LoadPluginAndSegfaultDetect;
+
+TEST_F(LoadPluginAndSegfaultDetectDeathTest, PluginWritesStackTraceOnSegfault)
+{
+    ASSERT_NE(det_lib_, nullptr);
+    ASSERT_NE(plug_lib_, nullptr);
+
+    auto detector_init = (void (*)())get_sym(det_lib_, "detector_init");
+    ASSERT_NE(detector_init, nullptr);
+
+    // Initialize the detector
+    detector_init();
+
+    auto plugin_crash_segfault = (crash_fn)get_sym(plug_lib_, "plugin_crash_segfault");
+    ASSERT_NE(plugin_crash_segfault, nullptr);
+
+    // ASSERT_DEATH will execute the lambda in a child process.
+    // It captures std::cerr and matches it against the provided regex.
+    ASSERT_DEATH({ plugin_crash_segfault(); }, "--- Stacktrace ---");
+}
