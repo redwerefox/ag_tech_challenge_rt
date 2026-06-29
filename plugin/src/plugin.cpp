@@ -36,4 +36,10 @@ PLUGIN_API int plugin_add(int a, int b) {
     return a + b;
 }
 
+PLUGIN_API void plugin_crash_segfault()
+{
+    int* p = nullptr;
+    *p = 123; // intentional segfault
+}
+
 }

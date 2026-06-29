@@ -10,6 +10,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 if(POLICY CMP0207)
     cmake_policy(SET CMP0207 NEW) # stop CPack cluttering output with normalized paths
 endif()
+
 include(InstallRequiredSystemLibraries)
 
 set(CPACK_PACKAGE_NAME "${PROJECT_NAME}")
@@ -37,32 +38,33 @@ else()
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 endif()
 
-#if(UNIX AND NOT APPLE)
-#    set(CMAKE_BUILD_RPATH "$ORIGIN/../lib")
-#    set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
-#    set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-#endif()
+# if(UNIX AND NOT APPLE)
+# set(CMAKE_BUILD_RPATH "$ORIGIN/../lib")
+# set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
+# set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+# endif()
 
 # move plugin into subdirectory
 add_subdirectory(plugin)
+add_subdirectory(plugin_segfault_detect)
 
 add_executable(${EXECUTABLE_NAME} app/src/main.cpp)
 
 target_include_directories(${EXECUTABLE_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/plugin/include)
+target_include_directories(${EXECUTABLE_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/plugin_segfault_detect/include)
 
 add_dependencies(${EXECUTABLE_NAME} plugin)
+add_dependencies(${EXECUTABLE_NAME} plugin_segfault_detect)
 
 if(WIN32)
     add_custom_command(TARGET ${EXECUTABLE_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            $<TARGET_FILE:plugin>
-            $<TARGET_FILE_DIR:${EXECUTABLE_NAME}>
+        $<TARGET_FILE:plugin>
+        $<TARGET_FILE_DIR:${EXECUTABLE_NAME}>
 
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            $<TARGET_RUNTIME_DLLS:plugin>
-            $<TARGET_FILE_DIR:${EXECUTABLE_NAME}>
-
-        COMMAND_EXPAND_LISTS
+        $<TARGET_FILE:plugin_segfault_detect>
+        $<TARGET_FILE_DIR:${EXECUTABLE_NAME}>
     )
 endif()
 
@@ -71,6 +73,15 @@ target_link_libraries(${EXECUTABLE_NAME} PRIVATE
 )
 
 install(TARGETS plugin
+    RUNTIME_DEPENDENCIES
+    PRE_EXCLUDE_REGEXES "api-ms-.*" "ext-ms-.*"
+    POST_EXCLUDE_REGEXES ".*[Ss]ystem32.*"
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+)
+
+install(TARGETS plugin_segfault_detect
     RUNTIME_DEPENDENCIES
     PRE_EXCLUDE_REGEXES "api-ms-.*" "ext-ms-.*"
     POST_EXCLUDE_REGEXES ".*[Ss]ystem32.*"
