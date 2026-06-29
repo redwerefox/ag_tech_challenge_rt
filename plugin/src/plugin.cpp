@@ -40,8 +40,9 @@ PLUGIN_API int plugin_add(int a, int b) {
 // Ideally this would be injected during test or 
 PLUGIN_API void plugin_crash_segfault()
 {
-    int* p = nullptr;
-    *p = 123; // intentional segfault
+    volatile int* trap = nullptr;
+    *trap = 42; 
+
 }
 
 }
