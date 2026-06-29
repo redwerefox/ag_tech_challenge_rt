@@ -40,7 +40,6 @@ PLUGIN_API int plugin_add(int a, int b) {
 // Ideally this would be injected during test or 
 PLUGIN_API void plugin_crash_segfault()
 {
-    BOOST_LOG_TRIVIAL(debug) << "plugin_crash_segfault() called";
     int* p = nullptr;
     *p = 123; // intentional segfault
 }

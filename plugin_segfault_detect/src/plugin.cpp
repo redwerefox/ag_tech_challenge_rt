@@ -12,7 +12,6 @@
 
 #include <csignal>
 #include <boost/log/trivial.hpp>
-#include <boost/stacktrace.hpp>
 
 #ifdef _WIN32
 #include <windows.h>
