@@ -46,6 +46,9 @@ endif()
 
 # move plugin into subdirectory
 add_subdirectory(plugin)
+
+set(CRASH_LOG_DIR "${CMAKE_BINARY_DIR}" CACHE PATH "Where crash logs go")
+set(CRASH_LOG_PATH "${CRASH_LOG_DIR}/crash.log")
 add_subdirectory(plugin_segfault_detect)
 
 add_executable(${EXECUTABLE_NAME} app/src/main.cpp)

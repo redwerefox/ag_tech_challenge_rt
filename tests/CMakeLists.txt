@@ -25,6 +25,10 @@ add_executable(${TEST_TARGET}
 target_include_directories(${TEST_TARGET} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../plugin/include)
 target_include_directories(${TEST_TARGET} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../plugin_segfault_detect/include)
 
+target_compile_definitions(${TEST_TARGET} PUBLIC
+    CRASH_LOG_PATH="${CRASH_LOG_PATH}"
+)
+
 target_link_libraries(${TEST_TARGET} PRIVATE
     ${CMAKE_DL_LIBS}
     GTest::gtest

@@ -26,9 +26,12 @@ target_compile_definitions(${TARGET_NAME} PRIVATE PLUGIN_BUILDING)
 target_include_directories(${TARGET_NAME} PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
+target_compile_definitions(${TARGET_NAME} PUBLIC
+    CRASH_LOG_PATH="${CRASH_LOG_PATH}"
+)
 
 find_package(Boost REQUIRED)
 
 target_link_libraries(${TARGET_NAME} PRIVATE
-    Boost::headers
+    boost::boost
 )
