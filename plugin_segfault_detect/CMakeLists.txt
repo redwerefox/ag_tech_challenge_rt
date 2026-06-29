@@ -27,8 +27,8 @@ target_include_directories(${TARGET_NAME} PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
 
-# Linking dependencies
-# todo add boost log to conan
-if(WIN32 AND Boost_USE_STATIC_LIBS STREQUAL "OFF")
-    target_compile_definitions(${TARGET_NAME} PRIVATE BOOST_ALL_DYN_LINK)
-endif()
+find_package(Boost REQUIRED)
+
+target_link_libraries(${TARGET_NAME} PRIVATE
+    Boost::headers
+)
