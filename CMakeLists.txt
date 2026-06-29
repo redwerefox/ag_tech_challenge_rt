@@ -37,11 +37,12 @@ else()
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 endif()
 
-#if(UNIX AND NOT APPLE)
-#    set(CMAKE_BUILD_RPATH "$ORIGIN/../lib")
-#    set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
-#    set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-#endif()
+if(UNIX AND NOT APPLE)
+    set(CMAKE_SKIP_BUILD_RPATH FALSE)
+    set(CMAKE_SET_BUILD_WITH_INSTALL_RPATH TRUE)
+    #set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
+    #set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+endif()
 
 # move plugin into subdirectory
 add_subdirectory(plugin)
