@@ -73,6 +73,10 @@ target_link_libraries(${EXECUTABLE_NAME} PRIVATE
 
 install(TARGETS plugin
     RUNTIME_DEPENDENCIES
+    DIRECTORIES
+        "$<TARGET_FILE_DIR:plugin>"
+        "/home/runner/.conan2"
+        "/home/runner/work/ag_tech_challenge_rt/ag_tech_challenge_rt/build/Release"
     PRE_EXCLUDE_REGEXES "api-ms-.*" "ext-ms-.*"
     POST_EXCLUDE_REGEXES ".*[Ss]ystem32.*"
     RUNTIME DESTINATION bin
