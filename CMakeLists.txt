@@ -72,9 +72,6 @@ target_link_libraries(${EXECUTABLE_NAME} PRIVATE
 )
 
 install(TARGETS plugin
-    RUNTIME_DEPENDENCIES
-    PRE_EXCLUDE_REGEXES "api-ms-.*" "ext-ms-.*"
-    POST_EXCLUDE_REGEXES ".*[Ss]ystem32.*"
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib
