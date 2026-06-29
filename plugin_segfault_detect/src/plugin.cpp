@@ -1,66 +1,42 @@
 #include "plugin/plugin.h"
 
-#include <iostream>
-#include <cstdlib>
-#include <chrono>
-#include <thread>
-
-#include <execinfo.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <cstring>
-
+#include <fstream>
 #include <csignal>
 #include <boost/log/trivial.hpp>
+#include <boost/stacktrace.hpp>
 
 #ifdef _WIN32
 #include <windows.h>
-#else
-#include <signal.h>
+static PVOID g_vehHandle = nullptr;
 #endif
 
-static constexpr const char* LOG_PATH = CRASH_LOG_PATH;
-
-static void segv_handler(int signum)
+// Shared minimal writer
+static void dump_stacktrace()
 {
-      constexpr int MAX_FRAMES = 64;
-    void* frames[MAX_FRAMES];
-    int n = backtrace(frames, MAX_FRAMES);
+    std::ofstream(CRASH_LOG_PATH) << boost::stacktrace::stacktrace();
+}
 
-    int fd = open(CRASH_LOG_PATH, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-    if (fd >= 0) {
-        // First line: signal info
-        const char header[] = "=== SEGFAULT ===\n";
-        write(fd, header, sizeof(header) - 1);
-        // Dump raw stack (async-signal-safe, prints addresses + nearest symbol)
-        backtrace_symbols_fd(frames, n, fd);
-        close(fd);
-    }
-
+#ifdef _WIN32
+static LONG WINAPI crash_handler(EXCEPTION_POINTERS *)
+{
+    dump_stacktrace();
+    return EXCEPTION_CONTINUE_SEARCH; // Required so GTest can process the failure
+}
+#else
+static void crash_handler(int signum)
+{
+    dump_stacktrace();
     std::signal(signum, SIG_DFL);
     std::raise(signum);
-
-
-
 }
+#endif
 
 void detector_init()
 {
 #ifdef _WIN32
-    AddVectoredExceptionHandler(1,
-                                [](EXCEPTION_POINTERS *) -> LONG
-                                {
-                                    segv_handler(SIGSEGV);
-                                    return EXCEPTION_CONTINUE_SEARCH;
-                                });
+    g_vehHandle = AddVectoredExceptionHandler(1, crash_handler);
 #else
-    struct sigaction sa{};
-    sa.sa_handler = [](int)
-    {
-        segv_handler(SIGSEGV);
-    };
-
-    sigaction(SIGSEGV, &sa, nullptr);
+    std::signal(SIGSEGV, crash_handler);
 #endif
 
     BOOST_LOG_TRIVIAL(debug) << "[detector] initialized";
@@ -68,5 +44,12 @@ void detector_init()
 
 void detector_shutdown()
 {
+#ifdef _WIN32
+    if (g_vehHandle)
+        RemoveVectoredExceptionHandler(g_vehHandle);
+#else
+    std::signal(SIGSEGV, SIG_DFL);
+#endif
+
     BOOST_LOG_TRIVIAL(debug) << "[detector] shutdown";
 }

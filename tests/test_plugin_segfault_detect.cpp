@@ -10,12 +10,18 @@
 
 using crash_fn = void (*)();
 
-static constexpr const char* LOG_PATH = CRASH_LOG_PATH;
+static constexpr const char *LOG_PATH = CRASH_LOG_PATH;
 
 static void *load_lib(const char *path)
 {
 #ifdef _WIN32
-    return LoadLibraryA(path);
+    auto lib = LoadLibraryA(path);
+    if (!lib)
+    {
+        std::cerr << "Failed to load library: " << path << "\n";
+        std::cerr << "Error: " << GetLastError() << "\n";
+    }
+    return lib;
 #else
     auto lib = dlopen(path, RTLD_NOW);
 
@@ -139,11 +145,11 @@ TEST_F(LoadPluginAndSegfaultDetectDeathTest, PluginWritesStackTraceOnSegfault)
     // check for file
 
     // Inside your test:
-        namespace fs = std::filesystem;
+    namespace fs = std::filesystem;
     fs::path backtrace_file = CRASH_LOG_PATH; // Use the macro here!
 
-EXPECT_TRUE(fs::exists(backtrace_file)) 
-    << "Expected " << backtrace_file << " to be created after segfault.";
+    EXPECT_TRUE(fs::exists(backtrace_file))
+        << "Expected " << backtrace_file << " to be created after segfault.";
     ASSERT_TRUE(std::filesystem::exists(backtrace_file)) << "Expected backtrace.dump file to be created after segfault."; // Clean up after test
 
     detector_shutdown();
