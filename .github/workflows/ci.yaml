@@ -51,7 +51,7 @@ jobs:
               ~/.conan2/r
           key: conan-${{ runner.os }}-${{ matrix.profile }}-${{ hashFiles('conanfile.py', 'CMakeLists.txt', 'profiles/**') }}
 
-       - name: Install Conan
+      - name: Install Conan
         run: pip install conan
 
       - name: Detect Conan profile
