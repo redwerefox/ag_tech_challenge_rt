@@ -13,7 +13,7 @@ struct LogInitializer {
     }
 };
 
-void ensure_log_initialized() { static LogInitializer init; }
+void ensure_log_initialized() { const static LogInitializer init; }
 
 } // namespace
 

@@ -99,7 +99,7 @@ int main(int /* argc */, char *argv[]) {
     auto plugin_path = find_plugin(*argv);
     std::cout << "Loading plugin from: " << plugin_path << "\n";
 
-    PluginLoader loader(plugin_path);
+    const PluginLoader loader(plugin_path);
     if (!loader.is_loaded()) {
         std::cerr << "Could not load the plugin library." << "\n";
         return EXIT_FAILURE;
@@ -114,7 +114,7 @@ int main(int /* argc */, char *argv[]) {
         return EXIT_FAILURE;
     }
 
-    int return_code = init_fn();
+    const int return_code = init_fn();
     if (return_code != 0) {
         std::cerr << "plugin_init failed with code " << return_code << "\n";
         return EXIT_FAILURE;

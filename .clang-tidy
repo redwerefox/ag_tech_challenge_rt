@@ -1,19 +1,12 @@
-#https://github.com/cpp-best-practices/gui_starter_template/blob/main/.clang-tidy
-Checks: "*,
-        -abseil-*,
-        -altera-*,
-        -android-*,
-        -fuchsia-*,
-        -google-*,
-        -llvm*,
-        -modernize-use-trailing-return-type,
-        -zircon-*,
-        -readability-else-after-return,
-        -readability-static-accessed-through-instance,
-        -readability-avoid-const-params-in-decls,
-        -cppcoreguidelines-non-private-member-variables-in-classes,
-        -misc-non-private-member-variables-in-classes,
-"
+Checks: >
+  misc-const-correctness,
+  clang-analyzer-*,
+  bugprone-*,
+  performance-*,
+  portability-*,
+  -abseil-*,
+  -google-*,
+  -llvm*
 WarningsAsErrors: '*'
 HeaderFilterRegex: ''
 FormatStyle:     none

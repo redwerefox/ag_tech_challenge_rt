@@ -118,7 +118,7 @@ TEST_F(LoadPluginAndSegfaultDetectDeathTest, PluginWritesStackTraceOnSegfault) {
 
     // Inside your test:
     namespace fs = std::filesystem;
-    fs::path backtrace_file = CRASH_LOG_PATH; // Use the macro here!
+    const fs::path backtrace_file = CRASH_LOG_PATH; // Use the macro here!
 
     EXPECT_TRUE(fs::exists(backtrace_file)) << "Expected " << backtrace_file << " to be created after segfault.";
     ASSERT_TRUE(std::filesystem::exists(backtrace_file))

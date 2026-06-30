@@ -138,7 +138,7 @@ jobs:
             --profile:build=profiles/ubuntu-gcc
 
       - name: Configure CMake for linting
-        run: cmake --preset  conan-release -DRUN_CLANG_TIDY=ON -DENABLE_FORMAT_CHECK=ON
+        run: cmake --preset conan-release -DRUN_CLANG_TIDY=ON -DENABLE_FORMAT_CHECK=ON
 
       - name: Run clang-tidy
         run: cmake --build --preset conan-release --target format-check

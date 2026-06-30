@@ -68,7 +68,7 @@ std::string get_plugin_path() {
     char *env = nullptr;
     {
         static std::mutex env_mutex;
-        std::lock_guard<std::mutex> lock(env_mutex);
+        const std::lock_guard<std::mutex> lock(env_mutex);
         env = std::getenv(  // NOLINT(concurrency-mt-unsafe) - getenv is not thread-safe, but we are locking around it
             "PLUGIN_PATH"); // NOLINT(concurrency-mt-unsafe) -
     }
