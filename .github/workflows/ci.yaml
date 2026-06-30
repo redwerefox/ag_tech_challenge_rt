@@ -2,103 +2,33 @@ name: tech_challenge_rt_cicd
 
 on:
   push:
-    branches: [ "main", "git_actions", "linting" ]
+    branches: [ "main", "git_actions" ]
+    tags:
+      - "v*"
   pull_request:
     branches: [ "main", "git_actions" ]
 
+
+# -----------------------------
+# BUILD + TEST MATRIX
+# -----------------------------
 jobs:
-
-  # run linting only on clang for now
-  tidy:
-    name: Lint clang tidy
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v6
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Install Conan
-        run: pip install conan
-
-      - name: Cache Conan
-        uses: actions/cache@v4
-        with:
-          path: ~/.conan2
-          key: conan-${{ runner.os }}-clang-${{ hashFiles('conanfile.py', 'profiles/**') }}
-          restore-keys: |
-            conan-${{ runner.os }}-clang-
-
-      - name: Detect Conan profile
-        run: conan profile detect --force
-
-      - name: Install clang dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y ninja-build clang
-
-      - name: Ensure clang-tidy is installed
-        run: sudo apt-get install -y clang-tidy
-
-      - name: Run clang-tidy
-        run: |
-          bash run_conan_clang_wclang_tidy.sh
-
-  enforceformat:
-    name: Enforce code formatting
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v6
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Install Conan
-        run: pip install conan
-
-      - name: Cache Conan
-        uses: actions/cache@v4
-        with:
-          path: ~/.conan2
-          key: conan-${{ runner.os }}-clang-${{ hashFiles('conanfile.py', 'profiles/**') }}
-          restore-keys: |
-            conan-${{ runner.os }}-clang-
-
-      - name: Detect Conan profile
-        run: conan profile detect --force
-
-      - name: Install clang dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y ninja-build clang
-
-      - name: Ensure clang-format is installed
-        run: sudo apt-get install -y clang-format
-
-      - name: Run clang-format
-        run: |
-          bash run_conan_clang_checkFormat.sh
-
-
   build-and-test:
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
+
     strategy:
-      fail-fast: false # If one fails, let the others finish
+      fail-fast: false
       matrix:
         include:
           - name: "Ubuntu (GCC)"
             os: ubuntu-latest
             profile: "profiles/ubuntu-gcc"
+
           - name: "Ubuntu (Clang)"
             os: ubuntu-latest
             profile: "profiles/ubuntu-clang"
+
           - name: "Windows (MSVC)"
             os: windows-latest
             profile: "profiles/windows-msvc"
@@ -107,46 +37,74 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v6
 
-      #- name: Set up Python
-      #  uses: actions/setup-python@v5
-      #  with:
-      #     python-version: "3.12"
       - name: Install Conan
         run: pip install conan
 
       - name: Detect Conan profile
         run: conan profile detect --force
 
-      - name: Install dependencies (Linux)
-        if: matrix.profile == 'profiles/ubuntu-clang'
+      - name: Cache Conan
+        uses: actions/cache@v4
+        with:
+        path: ~/.conan2
+        key: conan-${{ runner.os }}-${{ hashFiles('conanfile.py', 'profiles/**') }}
+
+      # -----------------------------
+      # LINUX TOOLCHAINS
+      # -----------------------------
+      - name: Install Linux dependencies
+        if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y ninja-build clang
+          sudo apt-get install -y ninja-build clang gcc g++
 
-
-      - name: Build and Test Ubuntu Clang 
-        if: matrix.profile == 'profiles/ubuntu-clang'
-        run: |
-          bash run_conan_clang.sh
-
-      - name: Build and Test Ubuntu GCC
-        if: matrix.profile == 'profiles/ubuntu-gcc'
-        run: bash run_conan_gcc.sh
-
-      - name: Setup MSVC Environment
-        if: matrix.profile == 'profiles/windows-msvc'
+      # -----------------------------
+      # MSVC TOOLCHAIN
+      # -----------------------------
+      - name: Setup MSVC
+        if: runner.os == 'Windows'
         uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: x64
 
-      - name: Build and Test Windows MSVC
-        if: matrix.profile == 'profiles/windows-msvc'
-        shell: cmd
-        run: run_conan.bat
+      # -----------------------------
+      # CONAN INSTALL (UNIFIED)
+      # -----------------------------
+      - name: Conan install
+        run: |
+          conan install . \
+            --build=missing \
+            -s build_type=Release \
+            --profile:host=${{ matrix.profile }} \
+            --profile:build=${{ matrix.profile }}
 
+      # -----------------------------
+      # CMAKE CONFIGURE
+      # -----------------------------
+      - name: Configure CMake
+        run: cmake --preset conan-release
+
+      # -----------------------------
+      # BUILD
+      # -----------------------------
+      - name: Build
+        run: cmake --build --preset conan-release
+
+      # -----------------------------
+      # TEST
+      # -----------------------------
+      - name: Test
+        run: ctest --preset conan-release --output-on-failure
+
+      # -----------------------------
+      # PACKAGE
+      # -----------------------------
       - name: Package with CPack
         run: cmake --build --preset conan-release --target package
-      
+
+      # -----------------------------
+      # UPLOAD ARTIFACTS
+      # -----------------------------
       - name: Upload CPack artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -155,6 +113,55 @@ jobs:
             build/**/*.tar.gz
             build/**/*.zip
 
-  
-      
 
+  lint:
+    name: Lint Code
+    runs-on: ubuntu-latest
+    needs: build-and-test
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+
+      - name: Install Conan
+        run: pip install conan
+
+      - name: Detect Conan profile
+        run: conan profile detect --force
+
+      - name: Conan install for linting
+        run: |
+          conan install . \
+            --build=missing \
+            -s build_type=Release \
+            --profile:host=profiles/ubuntu-gcc \
+            --profile:build=profiles/ubuntu-gcc
+
+      - name: Configure CMake for linting
+        run: cmake --preset  conan-release -DRUN_CLANG_TIDY=ON -DENABLE_FORMAT_CHECK=ON
+
+      - name: Run clang-tidy
+        run: cmake --build --preset conan-release --target format-check
+
+# -----------------------------
+# RELEASE JOB (ONLY ON TAGS)
+# -----------------------------
+  release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: build-and-test
+
+    if: startsWith(github.ref, 'refs/tags/v')
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Create Release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ github.ref_name }}
+          artifacts: artifacts/**/*.zip,artifacts/**/*.tar.gz
+          allowUpdates: true
