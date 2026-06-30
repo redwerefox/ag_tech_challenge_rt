@@ -142,7 +142,8 @@ jobs:
   release:
     name: Create GitHub Release
     needs: [build-and-test]
-    
+    runs-on: ${{ matrix.os }}
+
     strategy:
       fail-fast: false
       matrix:
