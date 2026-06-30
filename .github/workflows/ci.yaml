@@ -44,19 +44,19 @@ jobs:
         run: conan profile detect --force
 
       - name: Install dependencies (Linux)
-        if: matrix.profile == 'profiles/ubuntu-clang'
+        if: matrix.profile == 'profiles/linux-clang'
         run: |
           sudo apt-get update
           sudo apt-get install -y ninja-build clang
 
 
-      - name: Build and Test Ubuntu Clang 
-        if: matrix.profile == 'profiles/ubuntu-clang'
+      - name: Build and Test Linux Clang 
+        if: matrix.profile == 'profiles/linux-clang'
         run: |
           bash run_conan_clang.sh
 
-      - name: Build and Test Ubuntu GCC
-        if: matrix.profile == 'profiles/ubuntu-gcc'
+      - name: Build and Test Linux GCC
+        if: matrix.profile == 'profiles/linux-gcc'
         run: bash run_conan_gcc.sh
 
       - name: Setup MSVC Environment
