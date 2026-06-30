@@ -1,6 +1,7 @@
 
 set(TARGET_NAME plugin)
 
+find_package(Boost REQUIRED COMPONENTS log)
 # create a filegroup for source files and header files
 set(PLUGIN_SOURCES
     src/plugin.cpp
@@ -27,7 +28,7 @@ target_include_directories(${TARGET_NAME} PUBLIC
 
 # Linking dependencies
 # todo add boost log to conan
-find_package(Boost REQUIRED COMPONENTS log)
+
 target_link_libraries(${TARGET_NAME} PRIVATE Boost::log)
 
 if(WIN32 AND Boost_USE_STATIC_LIBS STREQUAL "OFF")
