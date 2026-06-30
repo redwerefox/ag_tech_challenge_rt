@@ -127,8 +127,8 @@ jobs:
           conan install . \
             --build=missing \
             -s build_type=Release \
-            --profile:host=profiles/${{ matrix.profile }} \
-            --profile:build=profiles/${{ matrix.profile }}
+            --profile:host=${{ matrix.profile }} \
+            --profile:build=${{ matrix.profile }}
 
       - name: Configure CMake for linting
         run: cmake --preset conan-release -DRUN_CLANG_TIDY=ON -DENABLE_FORMAT_CHECK=ON
