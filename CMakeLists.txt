@@ -106,19 +106,7 @@ if(WIN32)
     )
 endif()
 
-install(TARGETS plugin
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
-)
-
-install(TARGETS plugin
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
-)
-
-install(TARGETS plugin
+install(TARGETS ${EXECUTABLE_NAME} plugin plugin_segfault_detect
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib
