@@ -26,6 +26,7 @@ include(CPack)
 
 set(EXECUTABLE_NAME challenge)
 
+set(CMAKE_INSTALL_DEBUG_LIBRARIES FALSE)
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -66,11 +67,11 @@ else()
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 endif()
 
-# if(UNIX AND NOT APPLE)
-# set(CMAKE_BUILD_RPATH "$ORIGIN/../lib")
-# set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
-# set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-# endif()
+ if(UNIX AND NOT APPLE)
+ set(CMAKE_BUILD_RPATH "$ORIGIN/../lib")
+ set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
+ set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+ endif()
 
 # move plugin into subdirectory
 add_subdirectory(plugin)
@@ -106,27 +107,18 @@ if(WIN32)
 endif()
 
 install(TARGETS plugin
-    RUNTIME_DEPENDENCIES
-    PRE_EXCLUDE_REGEXES "api-ms-.*" "ext-ms-.*"
-    POST_EXCLUDE_REGEXES ".*[Ss]ystem32.*"
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib
 )
 
-install(TARGETS plugin_segfault_detect
-    RUNTIME_DEPENDENCIES
-    PRE_EXCLUDE_REGEXES "api-ms-.*" "ext-ms-.*"
-    POST_EXCLUDE_REGEXES ".*[Ss]ystem32.*"
+install(TARGETS plugin
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib
 )
 
-install(TARGETS ${EXECUTABLE_NAME}
-    RUNTIME_DEPENDENCIES
-    PRE_EXCLUDE_REGEXES "api-ms-.*" "ext-ms-.*"
-    POST_EXCLUDE_REGEXES ".*[Ss]ystem32.*"
+install(TARGETS plugin
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib

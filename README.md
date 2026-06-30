@@ -38,11 +38,17 @@ ctest --preset conan-release
 
 \note: Use the x64 Native Tools Command Prompt for Visual Studio 20XX to run the following commands.
 
-```bat
+```bash
 conan install . --build=missing -s build_type=Release
 cmake --preset conan-release
 cmake --build --preset conan-release
 ctest --preset conan-release
+```
+
+### Create a self contained installation of the project (Linux and Windows)
+
+```bash
+cmake --build --preset conan-release --target install
 ```
 
 ## Quick Overview
