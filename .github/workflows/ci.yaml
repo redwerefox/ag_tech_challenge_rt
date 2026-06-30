@@ -3,23 +3,32 @@ name: tech_challenge_rt_cicd
 on:
   push:
     branches: [ "main", "git_actions" ]
+    tags:
+      - "v*"
   pull_request:
     branches: [ "main", "git_actions" ]
 
+
+# -----------------------------
+# BUILD + TEST MATRIX
+# -----------------------------
 jobs:
   build-and-test:
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
+
     strategy:
-      fail-fast: false # If one fails, let the others finish
+      fail-fast: false
       matrix:
         include:
           - name: "Ubuntu (GCC)"
             os: ubuntu-latest
-            profile: "profiles/ubuntu-gcc"
+            profile: "profiles/linux-gcc"
+
           - name: "Ubuntu (Clang)"
             os: ubuntu-latest
-            profile: "profiles/ubuntu-clang"
+            profile: "profiles/linux-clang"
+
           - name: "Windows (MSVC)"
             os: windows-latest
             profile: "profiles/windows-msvc"
@@ -28,10 +37,15 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v6
 
-      #- name: Set up Python
-      #  uses: actions/setup-python@v5
-      #  with:
-      #     python-version: "3.12"
+      - name: Cache Conan packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.conan2/p
+          key: >
+            conan-${{ runner.os }}-
+            ${{ matrix.profile }}-
+            ${{ hashFiles('conanfile.py', 'CMakeLists.txt', 'profiles/**') }}
+
       - name: Install Conan
         run: pip install conan
 
@@ -39,19 +53,19 @@ jobs:
         run: conan profile detect --force
 
       - name: Install dependencies (Linux)
-        if: matrix.profile == 'profiles/ubuntu-clang'
+        if: matrix.profile == 'profiles/linux-clang'
         run: |
           sudo apt-get update
           sudo apt-get install -y ninja-build clang
 
 
-      - name: Build and Test Ubuntu Clang 
-        if: matrix.profile == 'profiles/ubuntu-clang'
+      - name: Build and Test Linux Clang 
+        if: matrix.profile == 'profiles/linux-clang'
         run: |
           bash run_conan_clang.sh
 
-      - name: Build and Test Ubuntu GCC
-        if: matrix.profile == 'profiles/ubuntu-gcc'
+      - name: Build and Test Linux GCC
+        if: matrix.profile == 'profiles/linux-gcc'
         run: bash run_conan_gcc.sh
 
       - name: Setup MSVC Environment
@@ -76,10 +90,87 @@ jobs:
             build/**/*.tar.gz
             build/**/*.zip
 
-      - name: create release if tagged
-        if: startsWith(github.ref, 'refs/tags/v')
+
+  lint:
+    name: Lint Code
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: "Ubuntu (Clang)"
+            os: ubuntu-latest
+            profile: "profiles/linux-clang"
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+
+      - name: Cache Conan packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.conan2/p
+          key: >
+            conan-${{ runner.os }}-
+            ${{ matrix.profile }}-
+            ${{ hashFiles('conanfile.py', 'CMakeLists.txt', 'profiles/**') }}
+
+      - name: Install Conan
+        run: pip install conan
+
+      - name: Detect Conan profile
+        run: conan profile detect --force
+
+      - name: Conan install for linting
+        run: |
+          conan install . \
+            --build=missing \
+            -s build_type=Release \
+            --profile:host=${{ matrix.profile }} \
+            --profile:build=${{ matrix.profile }}
+
+      - name: Configure CMake for linting
+        run: cmake --preset conan-release -DRUN_CLANG_TIDY=ON -DENABLE_FORMAT_CHECK=ON
+
+      - name: Run clang-tidy
+        run: cmake --build --preset conan-release --target format-check
+
+# -----------------------------
+# RELEASE JOB (ONLY ON TAGS)
+# -----------------------------
+  release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: "Ubuntu (GCC)"
+            os: ubuntu-latest
+            profile: "profiles/linux-gcc"
+
+          - name: "Ubuntu (Clang)"
+            os: ubuntu-latest
+            profile: "profiles/linux-clang"
+
+          - name: "Windows (MSVC)"
+            os: windows-latest
+            profile: "profiles/windows-msvc"
+          
+
+    if: startsWith(github.ref, 'refs/tags/v')
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Create Release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: cpack-${{ matrix.name }}
-
-     
+          tag: ${{ github.ref_name }}
+          artifacts: artifacts/**/*.zip,artifacts/**/*.tar.gz
+          allowUpdates: true

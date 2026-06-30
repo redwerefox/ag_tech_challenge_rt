@@ -1,18 +1,54 @@
 
 ## Getting Started
 
-### Install conan
+### Requires
+python3 >= 3.12 and matching pip 
+
+### Install conan (once)
 
 ```bash
 source install_conan.sh
 ``` 
-On Windows use git bash to create the virtual environment.
+On Windows use git bash to run the above script or execute its commands manually:
+```bash
+python3 -m venv venv-conan
+```
 
-### Run conan (Windows) to install dependencies, build and run tests
+## Build on Linux
 
-```bat
-venv-conan\Scripts\activate
-run_conan.bat
+```bash
+source venv-conan/bin/activate
+conan install . --build=missing -s build_type=Release
+cmake --preset conan-release
+cmake --build --preset conan-release
+ctest --preset conan-release
+```
+
+### Choose a conan propfile to choose a compiler and its version (gcc, clang, msvc) and set it in the conan profile:
+
+Example for Linux with clang 14:
+```bash
+conan install . --build=missing -s build_type=Release --profile=profiles/linux-clang
+cmake --preset conan-release
+cmake --build --preset conan-release
+ctest --preset conan-release
+```
+
+## Build on Windows
+
+\note: Use the x64 Native Tools Command Prompt for Visual Studio 20XX to run the following commands.
+
+```bash
+conan install . --build=missing -s build_type=Release
+cmake --preset conan-release
+cmake --build --preset conan-release
+ctest --preset conan-release
+```
+
+### Create a self contained installation of the project (Linux and Windows)
+
+```bash
+cmake --build --preset conan-release --target install
 ```
 
 ## Quick Overview
@@ -24,8 +60,11 @@ Your task is to add a new plugin and provide the full build, test, lint, packagi
 ## Table of Contents
 
 - [Getting Started](#getting-started)
-  - [Install conan](#install-conan)
-  - [Run conan (Windows) to install dependencies, build and run tests](#run-conan-windows-to-install-dependencies-build-and-run-tests)
+  - [Requires](#requires)
+  - [Install conan (once)](#install-conan-once)
+- [Build on Linux](#build-on-linux)
+  - [Choose a conan propfile to choose a compiler and its version (gcc, clang, msvc) and set it in the conan profile:](#choose-a-conan-propfile-to-choose-a-compiler-and-its-version-gcc-clang-msvc-and-set-it-in-the-conan-profile)
+- [Build on Windows](#build-on-windows)
 - [Quick Overview](#quick-overview)
 - [Table of Contents](#table-of-contents)
   - [1. Technical Solution Constraints](#1-technical-solution-constraints)

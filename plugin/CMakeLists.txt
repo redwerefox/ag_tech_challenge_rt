@@ -1,6 +1,7 @@
 
 set(TARGET_NAME plugin)
 
+find_package(Boost REQUIRED COMPONENTS log)
 # create a filegroup for source files and header files
 set(PLUGIN_SOURCES
     src/plugin.cpp
@@ -14,10 +15,17 @@ set(PLUGIN_HEADERS
     # Add other .h files here
 )
 
+
+
 # Build the plugin as a shared library
 add_library(${TARGET_NAME} SHARED
     ${PLUGIN_SOURCES}
     ${PLUGIN_HEADERS}
+)
+
+set_target_properties(${TARGET_NAME} PROPERTIES
+    BUILD_RPATH "$ORIGIN/../lib"
+    INSTALL_RPATH "$ORIGIN/../lib"
 )
 
 target_compile_definitions(${TARGET_NAME} PRIVATE PLUGIN_BUILDING)
@@ -27,7 +35,7 @@ target_include_directories(${TARGET_NAME} PUBLIC
 
 # Linking dependencies
 # todo add boost log to conan
-find_package(Boost REQUIRED COMPONENTS log)
+
 target_link_libraries(${TARGET_NAME} PRIVATE Boost::log)
 
 if(WIN32 AND Boost_USE_STATIC_LIBS STREQUAL "OFF")

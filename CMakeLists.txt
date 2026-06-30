@@ -26,6 +26,35 @@ include(CPack)
 
 set(EXECUTABLE_NAME challenge)
 
+set(CMAKE_INSTALL_DEBUG_LIBRARIES FALSE)
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+# set option to run clang-tidy on build
+option(RUN_CLANG_TIDY "Run clang-tidy on build" OFF)
+
+if(RUN_CLANG_TIDY)
+    find_program(CLANG_TIDY_EXE
+        NAMES clang-tidy clang-tidy.exe
+    )
+
+    if(CLANG_TIDY_EXE)
+        set(CMAKE_CXX_CLANG_TIDY
+            ${CLANG_TIDY_EXE}
+            --config-file=${CMAKE_SOURCE_DIR}/.clang-tidy
+        )
+    endif()
+endif()
+
+option(ENABLE_FORMAT_CHECK "Enable clang-format check target" OFF)
+
+if(ENABLE_FORMAT_CHECK)
+    add_custom_target(format-check
+        COMMAND clang-format --dry-run --Werror ${ALL_SOURCE_FILES}
+    )
+endif()
+
 # executables → bin
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
@@ -38,11 +67,11 @@ else()
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 endif()
 
-# if(UNIX AND NOT APPLE)
-# set(CMAKE_BUILD_RPATH "$ORIGIN/../lib")
-# set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
-# set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-# endif()
+ if(UNIX AND NOT APPLE)
+ set(CMAKE_BUILD_RPATH "$ORIGIN/../lib")
+ set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
+ set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+ endif()
 
 # move plugin into subdirectory
 add_subdirectory(plugin)
@@ -66,39 +95,18 @@ target_link_libraries(${EXECUTABLE_NAME} PRIVATE
 if(WIN32)
     add_custom_command(TARGET ${EXECUTABLE_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            $<TARGET_FILE:plugin>
-            $<TARGET_FILE_DIR:${EXECUTABLE_NAME}>
+        $<TARGET_FILE:plugin>
+        $<TARGET_FILE_DIR:${EXECUTABLE_NAME}>
 
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            $<TARGET_RUNTIME_DLLS:plugin>
-            $<TARGET_FILE_DIR:${EXECUTABLE_NAME}>
+        $<TARGET_RUNTIME_DLLS:plugin>
+        $<TARGET_FILE_DIR:${EXECUTABLE_NAME}>
 
         COMMAND_EXPAND_LISTS
     )
 endif()
 
-install(TARGETS plugin
-    RUNTIME_DEPENDENCIES
-    PRE_EXCLUDE_REGEXES "api-ms-.*" "ext-ms-.*"
-    POST_EXCLUDE_REGEXES ".*[Ss]ystem32.*"
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
-)
-
-install(TARGETS plugin_segfault_detect
-    RUNTIME_DEPENDENCIES
-    PRE_EXCLUDE_REGEXES "api-ms-.*" "ext-ms-.*"
-    POST_EXCLUDE_REGEXES ".*[Ss]ystem32.*"
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
-)
-
-install(TARGETS ${EXECUTABLE_NAME}
-    RUNTIME_DEPENDENCIES
-    PRE_EXCLUDE_REGEXES "api-ms-.*" "ext-ms-.*"
-    POST_EXCLUDE_REGEXES ".*[Ss]ystem32.*"
+install(TARGETS ${EXECUTABLE_NAME} plugin plugin_segfault_detect
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib

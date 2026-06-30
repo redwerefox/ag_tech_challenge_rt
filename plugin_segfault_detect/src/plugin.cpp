@@ -4,6 +4,7 @@
 #include <csignal>
 #include <boost/log/trivial.hpp>
 #include <boost/stacktrace.hpp>
+#include <tuple>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -11,45 +12,43 @@ static PVOID g_vehHandle = nullptr;
 #endif
 
 // Shared minimal writer
-static void dump_stacktrace()
-{
-    std::ofstream(CRASH_LOG_PATH) << boost::stacktrace::stacktrace();
-}
+namespace {
+void dump_stacktrace() { std::ofstream(CRASH_LOG_PATH) << boost::stacktrace::stacktrace(); }
 
 #ifdef _WIN32
-static LONG WINAPI crash_handler(EXCEPTION_POINTERS *)
-{
+static LONG WINAPI crash_handler(EXCEPTION_POINTERS *) {
     dump_stacktrace();
     return EXCEPTION_CONTINUE_SEARCH; // Required so GTest can process the failure
 }
 #else
-static void crash_handler(int signum)
-{
+void crash_handler(int signum) {
     dump_stacktrace();
-    std::signal(signum, SIG_DFL);
-    std::raise(signum);
+    std::ignore = std::signal(signum, SIG_DFL);
+    std::ignore = std::raise(signum);
 }
 #endif
+} // namespace
 
-void detector_init()
-{
+extern "C" {
+
+DETECTOR_API void detector_init() {
 #ifdef _WIN32
     g_vehHandle = AddVectoredExceptionHandler(1, crash_handler);
 #else
-    std::signal(SIGSEGV, crash_handler);
+    std::ignore = std::signal(SIGSEGV, crash_handler);
 #endif
 
     BOOST_LOG_TRIVIAL(debug) << "[detector] initialized";
 }
 
-void detector_shutdown()
-{
+DETECTOR_API void detector_shutdown() {
 #ifdef _WIN32
     if (g_vehHandle)
         RemoveVectoredExceptionHandler(g_vehHandle);
 #else
-    std::signal(SIGSEGV, SIG_DFL);
+    std::ignore = std::signal(SIGSEGV, SIG_DFL);
 #endif
 
     BOOST_LOG_TRIVIAL(debug) << "[detector] shutdown";
+}
 }

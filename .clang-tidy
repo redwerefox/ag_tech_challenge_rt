@@ -1,0 +1,12 @@
+Checks: >
+  misc-const-correctness,
+  clang-analyzer-*,
+  bugprone-*,
+  performance-*,
+  portability-*,
+  -abseil-*,
+  -google-*,
+  -llvm*
+WarningsAsErrors: '*'
+HeaderFilterRegex: ''
+FormatStyle:     none

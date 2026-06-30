@@ -3,6 +3,6 @@
 set -e
 
 conan install . --build=missing -s build_type=Release --profile:build=profiles/linux-clang --profile:host=profiles/linux-clang
-cmake --preset conan-release 
+cmake --preset conan-release -DRUN_CLANG_TIDY=ON
 cmake --build --preset conan-release
 ctest --preset conan-release

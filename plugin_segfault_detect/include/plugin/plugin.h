@@ -10,9 +10,10 @@
 #define DETECTOR_API __attribute__((visibility("default")))
 #endif
 
-extern "C"
-{
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-    DETECTOR_API void detector_init();
-    DETECTOR_API void detector_shutdown();
+DETECTOR_API void detector_init();
+DETECTOR_API void detector_shutdown();
 }
