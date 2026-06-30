@@ -46,9 +46,6 @@ jobs:
             ${{ matrix.profile }}-
             ${{ hashFiles('conanfile.py', 'CMakeLists.txt', 'profiles/**') }}
 
-      ${{ matrix.profile }}-
-      ${{ hashFiles('conanfile.py', 'CMakeLists.txt', 'profiles/**') }}
-
       - name: Install Conan
         run: pip install conan
 
