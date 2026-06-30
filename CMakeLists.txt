@@ -28,6 +28,8 @@ set(EXECUTABLE_NAME challenge)
 
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # set option to run clang-tidy on build
 option(RUN_CLANG_TIDY "Run clang-tidy on build" OFF)
 
