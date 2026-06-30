@@ -51,62 +51,42 @@ jobs:
               ~/.conan2/r
           key: conan-${{ runner.os }}-${{ matrix.profile }}-${{ hashFiles('conanfile.py', 'CMakeLists.txt', 'profiles/**') }}
 
-      # -----------------------------
-      # LINUX TOOLCHAINS
-      # -----------------------------
-      - name: Install Linux dependencies
-        if: runner.os == 'Linux'
+       - name: Install Conan
+        run: pip install conan
+
+      - name: Detect Conan profile
+        run: conan profile detect --force
+
+      - name: Install dependencies (Linux)
+        if: matrix.profile == 'profiles/ubuntu-clang'
         run: |
           sudo apt-get update
-          sudo apt-get install -y ninja-build clang gcc g++
+          sudo apt-get install -y ninja-build clang
 
-      # -----------------------------
-      # MSVC TOOLCHAIN
-      # -----------------------------
-      - name: Setup MSVC
-        if: runner.os == 'Windows'
+
+      - name: Build and Test Ubuntu Clang 
+        if: matrix.profile == 'profiles/ubuntu-clang'
+        run: |
+          bash run_conan_clang.sh
+
+      - name: Build and Test Ubuntu GCC
+        if: matrix.profile == 'profiles/ubuntu-gcc'
+        run: bash run_conan_gcc.sh
+
+      - name: Setup MSVC Environment
+        if: matrix.profile == 'profiles/windows-msvc'
         uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: x64
 
-      # -----------------------------
-      # CONAN INSTALL (UNIFIED)
-      # -----------------------------
-      - name: Conan install
-        run: |
-          conan install . \
-            --build=missing \
-            -s build_type=Release \
-            --profile:host=${{ matrix.profile }} \
-            --profile:build=${{ matrix.profile }}
+      - name: Build and Test Windows MSVC
+        if: matrix.profile == 'profiles/windows-msvc'
+        shell: cmd
+        run: run_conan.bat
 
-      # -----------------------------
-      # CMAKE CONFIGURE
-      # -----------------------------
-      - name: Configure CMake
-        run: cmake --preset conan-release
-
-      # -----------------------------
-      # BUILD
-      # -----------------------------
-      - name: Build
-        run: cmake --build --preset conan-release
-
-      # -----------------------------
-      # TEST
-      # -----------------------------
-      - name: Test
-        run: ctest --preset conan-release --output-on-failure
-
-      # -----------------------------
-      # PACKAGE
-      # -----------------------------
       - name: Package with CPack
         run: cmake --build --preset conan-release --target package
-
-      # -----------------------------
-      # UPLOAD ARTIFACTS
-      # -----------------------------
+      
       - name: Upload CPack artifacts
         uses: actions/upload-artifact@v4
         with:
