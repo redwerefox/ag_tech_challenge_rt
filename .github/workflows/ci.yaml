@@ -23,11 +23,11 @@ jobs:
         include:
           - name: "Ubuntu (GCC)"
             os: ubuntu-latest
-            profile: "profiles/ubuntu-gcc"
+            profile: "profiles/linux-gcc"
 
           - name: "Ubuntu (Clang)"
             os: ubuntu-latest
-            profile: "profiles/ubuntu-clang"
+            profile: "profiles/linux-clang"
 
           - name: "Windows (MSVC)"
             os: windows-latest
@@ -136,8 +136,8 @@ jobs:
           conan install . \
             --build=missing \
             -s build_type=Release \
-            --profile:host=profiles/ubuntu-gcc \
-            --profile:build=profiles/ubuntu-gcc
+            --profile:host=profiles/linux-gcc \
+            --profile:build=profiles/linux-gcc
 
       - name: Configure CMake for linting
         run: cmake --preset conan-release -DRUN_CLANG_TIDY=ON -DENABLE_FORMAT_CHECK=ON
