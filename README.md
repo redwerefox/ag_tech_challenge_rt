@@ -7,49 +7,74 @@ python3 >= 3.12 and matching pip
 ### Install conan (once)
 
 ```bash
-source install_conan.sh
+install_conan.sh
 ``` 
 On Windows use git bash to run the above script or execute its commands manually:
 ```bash
 python3 -m venv venv-conan
 ```
 
-## Build on Linux
-
+### Activate the virtual environment:
 ```bash
 source venv-conan/bin/activate
-conan install . --build=missing -s build_type=Release
-cmake --preset conan-release
-cmake --build --preset conan-release
-ctest --preset conan-release
+``` 
+
+#### On Windows:
+```bash
+venv-conan\Scripts\activate
 ```
 
-### Choose a conan propfile to choose a compiler and its version (gcc, clang, msvc) and set it in the conan profile:
-
-Example for Linux with clang 14:
+### Choose gcc or clang compiler and its version (gcc 11+, clang 14+) or MSVC and set it in the conan profile:
+```bash
+conan install . --build=missing -s build_type=Release --profile=profiles/linux-gcc
+```
+or 
 ```bash
 conan install . --build=missing -s build_type=Release --profile=profiles/linux-clang
-cmake --preset conan-release
-cmake --build --preset conan-release
-ctest --preset conan-release
-```
+``` 
+or 
+```bash
+conan install . --build=missing -s build_type=Release --profile=profiles/windows-msvc
+``` 
 
-## Build on Windows
-
-\note: Use the x64 Native Tools Command Prompt for Visual Studio 20XX to run the following commands.
+## Then building and running tests
 
 ```bash
-conan install . --build=missing -s build_type=Release
 cmake --preset conan-release
 cmake --build --preset conan-release
 ctest --preset conan-release
 ```
 
-### Create a self contained installation of the project (Linux and Windows)
+### Note for Windows 
+```bash
+cmake --preset conan-release
+cmake --build --preset conan-release
+ctest --preset conan-release
+``` 
+needs to run on x64 developer console
+
+## Scripts
+run_conan_gcc.sh - run conan build + test with gcc profile on Linux
+run_conan_clang.sh - run conan build + test with clang profile on Linux
+run_conan.bat - run conan build + test with msvc profile on Windows
+
+### Linting
+
+Linting is currently performed on cicd on clang alone.
+use these scripts for reference:
+
+run_conan_clang_checkFormat.sh - run clang-format check 
+run_conan_clang_wclang_tidy.sh - run clang-tidy check 
+These require a installation of clang-format and clang-tidy on the system.
+
+## Installation - Self contained package
 
 ```bash
 cmake --build --preset conan-release --target install
 ```
+
+## Release
+Mark a commit with a tag `v*` and push it to the remote. The CI will create a release and upload the install archives.
 
 ## Quick Overview
 
@@ -62,9 +87,15 @@ Your task is to add a new plugin and provide the full build, test, lint, packagi
 - [Getting Started](#getting-started)
   - [Requires](#requires)
   - [Install conan (once)](#install-conan-once)
-- [Build on Linux](#build-on-linux)
-  - [Choose a conan propfile to choose a compiler and its version (gcc, clang, msvc) and set it in the conan profile:](#choose-a-conan-propfile-to-choose-a-compiler-and-its-version-gcc-clang-msvc-and-set-it-in-the-conan-profile)
-- [Build on Windows](#build-on-windows)
+  - [Activate the virtual environment:](#activate-the-virtual-environment)
+    - [On Windows:](#on-windows)
+  - [Choose gcc or clang compiler and its version (gcc 11+, clang 14+) or MSVC and set it in the conan profile:](#choose-gcc-or-clang-compiler-and-its-version-gcc-11-clang-14-or-msvc-and-set-it-in-the-conan-profile)
+- [Then building and running tests](#then-building-and-running-tests)
+  - [Note for Windows](#note-for-windows)
+- [Scripts](#scripts)
+  - [Linting](#linting)
+- [Installation - Self contained package](#installation---self-contained-package)
+- [Release](#release)
 - [Quick Overview](#quick-overview)
 - [Table of Contents](#table-of-contents)
   - [1. Technical Solution Constraints](#1-technical-solution-constraints)
