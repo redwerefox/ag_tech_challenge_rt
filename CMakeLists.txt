@@ -34,7 +34,16 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 option(RUN_CLANG_TIDY "Run clang-tidy on build" OFF)
 
 if(RUN_CLANG_TIDY)
-    set(CMAKE_CXX_CLANG_TIDY "clang-tidy")
+    find_program(CLANG_TIDY_EXE
+        NAMES clang-tidy clang-tidy.exe
+    )
+
+    if(CLANG_TIDY_EXE)
+        set(CMAKE_CXX_CLANG_TIDY
+            ${CLANG_TIDY_EXE}
+            --config-file=${CMAKE_SOURCE_DIR}/.clang-tidy
+        )
+    endif()
 endif()
 
 option(ENABLE_FORMAT_CHECK "Enable clang-format check target" OFF)
