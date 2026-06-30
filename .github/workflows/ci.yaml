@@ -35,16 +35,6 @@ jobs:
       - name: Install Conan
         run: pip install conan
 
-      - name: Cache Conan
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.conan2
-            C:\Users\runneradmin\.conan2
-          key: conan-${{ runner.os }}-${{ matrix.profile }}-${{ hashFiles('conanfile.py', 'profiles/*') }}
-          restore-keys: |
-            conan-${{ runner.os }}-${{ matrix.profile }}-
-
       - name: Detect Conan profile
         run: conan profile detect --force
 
