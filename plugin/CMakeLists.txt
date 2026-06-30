@@ -1,8 +1,6 @@
 
 set(TARGET_NAME plugin)
 
-project(${TARGET_NAME} CXX)
-
 # create a filegroup for source files and header files
 set(PLUGIN_SOURCES
     src/plugin.cpp

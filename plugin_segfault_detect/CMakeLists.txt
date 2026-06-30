@@ -1,8 +1,6 @@
 
 set(TARGET_NAME plugin_segfault_detect)
 
-project(${TARGET_NAME} CXX)
-
 # create a filegroup for source files and header files
 set(PLUGIN_SOURCES
     src/plugin.cpp
@@ -35,3 +33,7 @@ find_package(Boost REQUIRED)
 target_link_libraries(${TARGET_NAME} PRIVATE
     boost::boost
 )
+
+if(WIN32 AND Boost_USE_STATIC_LIBS STREQUAL "OFF")
+    target_compile_definitions(${TARGET_NAME} PRIVATE BOOST_ALL_DYN_LINK)
+endif()

@@ -59,21 +59,23 @@ target_include_directories(${EXECUTABLE_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR
 add_dependencies(${EXECUTABLE_NAME} plugin)
 add_dependencies(${EXECUTABLE_NAME} plugin_segfault_detect)
 
-if(WIN32)
-    add_custom_command(TARGET ${EXECUTABLE_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        $<TARGET_FILE:plugin>
-        $<TARGET_FILE_DIR:${EXECUTABLE_NAME}>
-
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        $<TARGET_FILE:plugin_segfault_detect>
-        $<TARGET_FILE_DIR:${EXECUTABLE_NAME}>
-    )
-endif()
-
 target_link_libraries(${EXECUTABLE_NAME} PRIVATE
     ${CMAKE_DL_LIBS}
 )
+
+if(WIN32)
+    add_custom_command(TARGET ${EXECUTABLE_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            $<TARGET_FILE:plugin>
+            $<TARGET_FILE_DIR:${EXECUTABLE_NAME}>
+
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            $<TARGET_RUNTIME_DLLS:plugin>
+            $<TARGET_FILE_DIR:${EXECUTABLE_NAME}>
+
+        COMMAND_EXPAND_LISTS
+    )
+endif()
 
 install(TARGETS plugin
     RUNTIME_DEPENDENCIES
@@ -94,7 +96,12 @@ install(TARGETS plugin_segfault_detect
 )
 
 install(TARGETS ${EXECUTABLE_NAME}
+    RUNTIME_DEPENDENCIES
+    PRE_EXCLUDE_REGEXES "api-ms-.*" "ext-ms-.*"
+    POST_EXCLUDE_REGEXES ".*[Ss]ystem32.*"
     RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
 )
 
 enable_testing()
