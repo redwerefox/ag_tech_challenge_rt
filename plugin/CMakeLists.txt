@@ -15,10 +15,17 @@ set(PLUGIN_HEADERS
     # Add other .h files here
 )
 
+
+
 # Build the plugin as a shared library
 add_library(${TARGET_NAME} SHARED
     ${PLUGIN_SOURCES}
     ${PLUGIN_HEADERS}
+)
+
+set_target_properties(${TARGET_NAME} PROPERTIES
+    BUILD_RPATH "$ORIGIN/../lib"
+    INSTALL_RPATH "$ORIGIN/../lib"
 )
 
 target_compile_definitions(${TARGET_NAME} PRIVATE PLUGIN_BUILDING)
