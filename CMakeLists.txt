@@ -14,7 +14,7 @@ endif()
 include(InstallRequiredSystemLibraries)
 
 set(CPACK_PACKAGE_NAME "${PROJECT_NAME}")
-set(CPACK_PACKAGE_VERSION "0.1")
+set(CPACK_PACKAGE_VERSION "0.2")
 
 if(WIN32)
     set(CPACK_GENERATOR "ZIP")
